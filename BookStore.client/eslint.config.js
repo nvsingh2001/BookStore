@@ -1,17 +1,17 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import { defineConfig, globalIgnores } from 'eslint/config'
+const js = require('@eslint/js')
+const globals = require('globals')
+const reactHooks = require('eslint-plugin-react-hooks')
+const reactCompiler = require('eslint-plugin-react-compiler')
+const { defineConfig, globalIgnores } = require('eslint/config')
 
-export default defineConfig([
-  globalIgnores(['dist']),
+module.exports = defineConfig([
+  globalIgnores(['dist', 'eslint.config.js', 'babel.config.js', 'webpack.*.js']),
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['src/**/*.{js,jsx}'],
     extends: [
       js.configs.recommended,
       reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
+      reactCompiler.configs.recommended,
     ],
     languageOptions: {
       globals: globals.browser,
