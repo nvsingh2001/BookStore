@@ -12,11 +12,7 @@ module.exports = merge(common, {
     clean: true,
   },
   module: {
-    rules: [
-      { test: /\.scss$/, use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'] },
-    ],
+    rules: [{ test: /\.scss$/, use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'] }],
   },
-  plugins: [
-    new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' }),
-  ],
+  plugins: [new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' })],
 })

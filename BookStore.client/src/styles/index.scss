@@ -1,14 +1,14 @@
-@import "bootstrap/scss/functions";
+@import 'bootstrap/scss/functions';
 
-$primary: #8F2B2F;
+$primary: #8f2b2f;
 $body-color: #000000;
-$body-bg: #FFFFFF;
+$body-bg: #ffffff;
 $secondary: #00000029;
-$warning: #FFCE00;
-$success: #388E3C;
-$danger: #A03037;
+$warning: #ffce00;
+$success: #388e3c;
+$danger: #a03037;
 $font-family-base: 'Roboto', sans-serif;
 $headings-font-family: 'Lato', sans-serif;
 $headings-font-weight: 700;
 
-@import "bootstrap/scss/bootstrap";
+@import 'bootstrap/scss/bootstrap';
