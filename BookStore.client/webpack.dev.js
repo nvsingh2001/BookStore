@@ -9,8 +9,24 @@ module.exports = merge(common, {
     open: true,
     historyApiFallback: true,
     hot: true,
+    client: {
+      overlay: {
+        warnings: false,
+        errors: true,
+        runtimeErrors: true,
+      },
+    },
   },
   module: {
-    rules: [{ test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] }],
+    rules: [
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          { loader: 'sass-loader', options: { sassOptions: { quietDeps: true } } },
+        ],
+      },
+    ],
   },
 })
