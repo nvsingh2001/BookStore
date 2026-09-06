@@ -16,6 +16,15 @@ module.exports = merge(common, {
         runtimeErrors: true,
       },
     },
+    proxy: [
+      {
+        context: ['/api'],
+        target: 'https://bookstore.incubation.bridgelabz.com',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: { '^/api': '/bookstore_user' },
+      },
+    ],
   },
   module: {
     rules: [
