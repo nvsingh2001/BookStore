@@ -1,14 +1,14 @@
 import { useRef } from 'react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 
 export default function Header() {
   const searchRef = useRef(null)
+  const navigate = useNavigate()
 
   function handleSearchSubmit(e) {
     e.preventDefault()
     const query = searchRef.current.value
-    // TODO
-    console.log(query)
+    navigate(query ? `/?q=${encodeURIComponent(query)}` : '/')
   }
 
   return (
