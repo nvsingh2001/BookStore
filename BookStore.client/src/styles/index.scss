@@ -11,4 +11,24 @@ $font-family-base: 'Roboto', sans-serif;
 $headings-font-family: 'Lato', sans-serif;
 $headings-font-weight: 700;
 
+.modal-backdrop-custom {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.modal-content-custom {
+  background: $body-bg;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
 @import 'bootstrap/scss/bootstrap';
