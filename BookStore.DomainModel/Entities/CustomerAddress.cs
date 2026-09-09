@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using BookStore.DomainModel.Enums;
 
 namespace BookStore.DomainModel.Entities;
@@ -6,10 +7,11 @@ namespace BookStore.DomainModel.Entities;
 public class CustomerAddress
 {
     [Key]
-    public Guid CustomerAddressId { get; set; }
+    public Guid AddressId { get; set; }
     
-    [Required(ErrorMessage = "Userid is required")]
-    public int Userid { get; set; }
+    [Required(ErrorMessage = "UserId is required")]
+    [ForeignKey(nameof(User))]
+    public Guid UserId { get; set; }
     
     [Required(ErrorMessage = "AddressType is required")]
     public AddressType AddressType { get; set; }
@@ -29,4 +31,5 @@ public class CustomerAddress
     [MaxLength(255, ErrorMessage = "Max length is 255")]
     public string State { get; set; }
     
+    public virtual User User { get; set; }
 }
