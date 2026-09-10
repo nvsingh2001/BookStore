@@ -28,6 +28,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasIndex(e => e.Phone).IsUnique().HasDatabaseName("IX_User_Phone_Unique");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
             entity.Property(e => e.IsVerified).IsRequired().HasDefaultValue(false);
+            entity.Property(e => e.IsDeleted).IsRequired().HasDefaultValue(false);
+            entity.HasQueryFilter(e => !e.IsDeleted);
 
             entity.HasMany(u => u.CustomerAddresses)
                 .WithOne(c => c.User)
@@ -64,7 +66,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasMany(ca => ca.Orders)
                 .WithOne(o => o.Address)
                 .HasForeignKey(o => o.AddressId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Admin>(entity =>
@@ -119,6 +121,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<Order>(entity =>
         {
             entity.Property(e => e.OrderDate).HasDefaultValueSql("GETUTCDATE()");
+            entity.Property(e => e.ShippingFullAddress).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.ShippingCity).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.ShippingState).IsRequired().HasMaxLength(255);
 
             entity.HasMany(o => o.OrderItems)
                 .WithOne(oi => oi.Order)
