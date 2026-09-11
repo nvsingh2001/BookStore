@@ -9,5 +9,5 @@ public interface IAdminRepository
     Task<Admin?> GetAdminByIdAsync(Guid id);
     Task<Admin> UpdateAdminAsync(Admin admin);
     Task DeleteAdminAsync(Guid id);
-    Task<bool> AdminExistsAsync(string email);
+    Task<bool> AdminExistsAsync(string? email, string? phone);
 }
