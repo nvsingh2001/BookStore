@@ -5,7 +5,7 @@ namespace BookStore.DomainModel.Entities;
 
 public class Product
 {
-    [Key] public Guid BookId { get; set; }
+    [Key] public Guid ProductId { get; set; }
 
     [Required]
     [MaxLength(100, ErrorMessage = "Max length is 100")]

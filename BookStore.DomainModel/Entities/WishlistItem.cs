@@ -6,7 +6,7 @@ namespace BookStore.DomainModel.Entities;
 public class WishlistItem
 {
     [Key]
-    public Guid WishlistId { get; set; }
+    public Guid WishlistItemId { get; set; }
     
     [ForeignKey(nameof(User))]
     public Guid UserId { get; set; }

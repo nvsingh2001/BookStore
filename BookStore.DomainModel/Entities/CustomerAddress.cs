@@ -18,7 +18,7 @@ public class CustomerAddress
     [Required(ErrorMessage = "Address is required")]
     [MinLength(6, ErrorMessage = "Min length is 6")]
     [MaxLength(255, ErrorMessage = "Max length is 255")]
-    public string Fulladdress { get; set; }
+    public string FullAddress { get; set; }
 
     [Required(ErrorMessage = "City is required")]
     [MinLength(6, ErrorMessage = "Min length is 6")]

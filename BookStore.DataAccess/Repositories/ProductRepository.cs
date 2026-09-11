@@ -15,7 +15,7 @@ public class ProductRepository(ApplicationDbContext dbContext) : IProductReposit
 
     public async Task<Product?> GetProductByIdAsync(Guid id)
     {
-        return await dbContext.Products.FirstOrDefaultAsync(product => product.BookId == id);
+        return await dbContext.Products.FirstOrDefaultAsync(product => product.ProductId == id);
     }
 
     public async Task<IEnumerable<Product>> GetAllProductsAsync()
@@ -32,7 +32,7 @@ public class ProductRepository(ApplicationDbContext dbContext) : IProductReposit
 
     public async Task DeleteProductAsync(Guid id)
     {
-        var product = await dbContext.Products.FirstOrDefaultAsync(p => p.BookId == id);
+        var product = await dbContext.Products.FirstOrDefaultAsync(p => p.ProductId == id);
         if (product is null) return;
 
         dbContext.Products.Remove(product);
@@ -41,6 +41,6 @@ public class ProductRepository(ApplicationDbContext dbContext) : IProductReposit
 
     public async Task<bool> ProductExistsAsync(Guid id)
     {
-        return await dbContext.Products.AnyAsync(product => product.BookId == id);
+        return await dbContext.Products.AnyAsync(product => product.ProductId == id);
     }
 }

@@ -59,7 +59,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.Entity<CustomerAddress>(entity =>
         {
-            entity.Property(e => e.Fulladdress).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.FullAddress).IsRequired().HasMaxLength(255);
             entity.Property(e => e.City).IsRequired().HasMaxLength(255);
             entity.Property(e => e.State).IsRequired().HasMaxLength(255);
 
