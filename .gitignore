@@ -14,3 +14,6 @@ riderModule.iml
 
 node_modules/
 dist/
+
+BookStore/jwt-private.pem
+BookStore/jwt-public.pem

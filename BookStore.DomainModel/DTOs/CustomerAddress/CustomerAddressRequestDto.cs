@@ -8,4 +8,5 @@ public class CustomerAddressRequestDto
     public string FullAddress { get; set; }
     public string City { get; set; }
     public string State { get; set; }
+    public bool IsDefault { get; set; }
 }

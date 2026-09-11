@@ -62,6 +62,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(e => e.FullAddress).IsRequired().HasMaxLength(255);
             entity.Property(e => e.City).IsRequired().HasMaxLength(255);
             entity.Property(e => e.State).IsRequired().HasMaxLength(255);
+            entity.HasIndex(a => a.UserId)
+                .IsUnique()
+                .HasFilter("[IsDefault] = 1")
+                .HasDatabaseName("IX_CustomerAddress_UserId_IsDefault_Unique");
 
             entity.HasMany(ca => ca.Orders)
                 .WithOne(o => o.Address)

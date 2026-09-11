@@ -30,6 +30,8 @@ public class CustomerAddress
     [MaxLength(255, ErrorMessage = "Max length is 255")]
     public string State { get; set; }
 
+    public bool IsDefault { get; set; }
+
     public virtual User User { get; set; }
     public ICollection<Order> Orders { get; set; }
 }
