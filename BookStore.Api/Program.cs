@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using BookStore.BusinessLogic.Interfaces;
+using BookStore.BusinessLogic.Mapping;
 using BookStore.BusinessLogic.Services;
 using BookStore.DataAccess;
 using BookStore.DataAccess.Interfaces;
@@ -7,74 +8,96 @@ using BookStore.DataAccess.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NLog;
+using NLog.Web;
 
-var builder = WebApplication.CreateBuilder(args);
+var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+logger.Debug("Initializing application");
 
-// Add services to the container.
-builder.Services.AddControllers();
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IAdminRepository, AdminRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
-builder.Services.AddScoped<IWishlistItemRepository, WishlistItemRepository>();
-builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
-builder.Services.AddScoped<ICustomerAddressRepository, CustomerAddressRepository>();
-
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IAdminService, AdminService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IWishlistItemService, WishlistItemService>();
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IFeedbackService, FeedbackService>();
-builder.Services.AddScoped<ICartItemService, CartItemService>();
-builder.Services.AddScoped<ICustomerAddressService, CustomerAddressService>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
-builder.Services.AddSingleton<IEmailVerificationTokenService, EmailVerificationTokenService>();
-
-var rsa = RSA.Create();
-rsa.ImportFromPem(File.ReadAllText(builder.Configuration["JwtSettings:PublicKey"] ?? ""));
-var publicKey = new RsaSecurityKey(rsa);
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+try
 {
-    options.TokenValidationParameters = new TokenValidationParameters
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
+
+    // Add services to the container.
+    builder.Services.AddControllers();
+
+    builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+    builder.Services.AddScoped<IProductRepository, ProductRepository>();
+    builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+    builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+    builder.Services.AddScoped<IWishlistItemRepository, WishlistItemRepository>();
+    builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+    builder.Services.AddScoped<ICustomerAddressRepository, CustomerAddressRepository>();
+
+    builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<IAdminService, AdminService>();
+    builder.Services.AddScoped<IOrderService, OrderService>();
+    builder.Services.AddScoped<IWishlistItemService, WishlistItemService>();
+    builder.Services.AddScoped<IProductService, ProductService>();
+    builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+    builder.Services.AddScoped<ICartItemService, CartItemService>();
+    builder.Services.AddScoped<ICustomerAddressService, CustomerAddressService>();
+    builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+    builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+    builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+    builder.Services.AddSingleton<IEmailVerificationTokenService, EmailVerificationTokenService>();
+
+    builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(UserProfile)));
+
+    var rsa = RSA.Create();
+    rsa.ImportFromPem(File.ReadAllText(builder.Configuration["JwtSettings:PublicKey"] ?? ""));
+    var publicKey = new RsaSecurityKey(rsa);
+
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
 
-        ValidIssuer = builder.Configuration.GetSection("JwtSettings:Issuer").Value,
-        ValidAudience = builder.Configuration.GetSection("JwtSettings:Audience").Value,
-        IssuerSigningKey = publicKey
-    };
-});
+            ValidIssuer = builder.Configuration.GetSection("JwtSettings:Issuer").Value,
+            ValidAudience = builder.Configuration.GetSection("JwtSettings:Audience").Value,
+            IssuerSigningKey = publicKey
+        };
+    });
 
-builder.Services.AddAuthorization();
+    builder.Services.AddAuthorization();
 
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+    // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+    builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var app = builder.Build();
+    var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) app.MapOpenApi();
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
-app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
 
-app.UseAuthentication();
+    app.UseAuthentication();
 
-app.UseAuthorization();
+    app.UseAuthorization();
 
-app.MapControllers();
+    app.MapControllers();
 
-app.Run();
+    app.Run();
+}
+catch (Exception ex)
+{
+    logger.Error(ex, "Stopped program because of exception");
+    throw;
+}
+finally
+{
+    LogManager.Shutdown();
+}
