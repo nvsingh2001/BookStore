@@ -25,7 +25,7 @@ namespace BookStore.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.Admin", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.Admin", b =>
                 {
                     b.Property<Guid>("AdminId")
                         .ValueGeneratedOnAdd()
@@ -69,7 +69,7 @@ namespace BookStore.DataAccess.Migrations
                     b.ToTable("Admins");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.CartItem", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.CartItem", b =>
                 {
                     b.Property<Guid>("CartItemId")
                         .ValueGeneratedOnAdd()
@@ -102,7 +102,7 @@ namespace BookStore.DataAccess.Migrations
                     b.ToTable("CartItems");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.CustomerAddress", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.CustomerAddress", b =>
                 {
                     b.Property<Guid>("AddressId")
                         .ValueGeneratedOnAdd()
@@ -136,7 +136,7 @@ namespace BookStore.DataAccess.Migrations
                     b.ToTable("CustomerAddresses");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.Feedback", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.Feedback", b =>
                 {
                     b.Property<Guid>("FeedbackId")
                         .ValueGeneratedOnAdd()
@@ -172,7 +172,7 @@ namespace BookStore.DataAccess.Migrations
                     b.ToTable("Feedbacks");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.Order", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.Order", b =>
                 {
                     b.Property<Guid>("OrderId")
                         .ValueGeneratedOnAdd()
@@ -201,7 +201,7 @@ namespace BookStore.DataAccess.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.OrderItem", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.OrderItem", b =>
                 {
                     b.Property<Guid>("OrderItemId")
                         .ValueGeneratedOnAdd()
@@ -233,7 +233,7 @@ namespace BookStore.DataAccess.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.Product", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.Product", b =>
                 {
                     b.Property<Guid>("BookId")
                         .ValueGeneratedOnAdd()
@@ -283,7 +283,7 @@ namespace BookStore.DataAccess.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.User", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.User", b =>
                 {
                     b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
@@ -332,7 +332,7 @@ namespace BookStore.DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.WishlistItem", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.WishlistItem", b =>
                 {
                     b.Property<Guid>("WishlistId")
                         .ValueGeneratedOnAdd()
@@ -360,15 +360,15 @@ namespace BookStore.DataAccess.Migrations
                     b.ToTable("WishlistItems");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.CartItem", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.CartItem", b =>
                 {
-                    b.HasOne("BookStore.DomainModel.Entities.Product", "Product")
+                    b.HasOne("BookStore.Api.DomainModel.Entities.Product", "Product")
                         .WithMany("CartItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookStore.DomainModel.Entities.User", "User")
+                    b.HasOne("BookStore.Api.DomainModel.Entities.User", "User")
                         .WithMany("CartItems")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -379,9 +379,9 @@ namespace BookStore.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.CustomerAddress", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.CustomerAddress", b =>
                 {
-                    b.HasOne("BookStore.DomainModel.Entities.User", "User")
+                    b.HasOne("BookStore.Api.DomainModel.Entities.User", "User")
                         .WithMany("CustomerAddresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -390,15 +390,15 @@ namespace BookStore.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.Feedback", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.Feedback", b =>
                 {
-                    b.HasOne("BookStore.DomainModel.Entities.Product", "Product")
+                    b.HasOne("BookStore.Api.DomainModel.Entities.Product", "Product")
                         .WithMany("Feedbacks")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookStore.DomainModel.Entities.User", "User")
+                    b.HasOne("BookStore.Api.DomainModel.Entities.User", "User")
                         .WithMany("Feedbacks")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -409,15 +409,15 @@ namespace BookStore.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.Order", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.Order", b =>
                 {
-                    b.HasOne("BookStore.DomainModel.Entities.CustomerAddress", "Address")
+                    b.HasOne("BookStore.Api.DomainModel.Entities.CustomerAddress", "Address")
                         .WithMany("Orders")
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("BookStore.DomainModel.Entities.User", "User")
+                    b.HasOne("BookStore.Api.DomainModel.Entities.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -428,15 +428,15 @@ namespace BookStore.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.OrderItem", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.OrderItem", b =>
                 {
-                    b.HasOne("BookStore.DomainModel.Entities.Order", "Order")
+                    b.HasOne("BookStore.Api.DomainModel.Entities.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookStore.DomainModel.Entities.Product", "Product")
+                    b.HasOne("BookStore.Api.DomainModel.Entities.Product", "Product")
                         .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -447,9 +447,9 @@ namespace BookStore.DataAccess.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.Product", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.Product", b =>
                 {
-                    b.HasOne("BookStore.DomainModel.Entities.Admin", "Admin")
+                    b.HasOne("BookStore.Api.DomainModel.Entities.Admin", "Admin")
                         .WithMany("Products")
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -458,15 +458,15 @@ namespace BookStore.DataAccess.Migrations
                     b.Navigation("Admin");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.WishlistItem", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.WishlistItem", b =>
                 {
-                    b.HasOne("BookStore.DomainModel.Entities.Product", "Product")
+                    b.HasOne("BookStore.Api.DomainModel.Entities.Product", "Product")
                         .WithMany("WishlistItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookStore.DomainModel.Entities.User", "User")
+                    b.HasOne("BookStore.Api.DomainModel.Entities.User", "User")
                         .WithMany("WishlistItems")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -477,22 +477,22 @@ namespace BookStore.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.Admin", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.Admin", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.CustomerAddress", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.CustomerAddress", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.Order", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.Order", b =>
                 {
                     b.Navigation("OrderItems");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.Product", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.Product", b =>
                 {
                     b.Navigation("CartItems");
 
@@ -503,7 +503,7 @@ namespace BookStore.DataAccess.Migrations
                     b.Navigation("WishlistItems");
                 });
 
-            modelBuilder.Entity("BookStore.DomainModel.Entities.User", b =>
+            modelBuilder.Entity("BookStore.Api.DomainModel.Entities.User", b =>
                 {
                     b.Navigation("CartItems");
 

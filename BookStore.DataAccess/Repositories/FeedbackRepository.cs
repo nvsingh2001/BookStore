@@ -15,12 +15,13 @@ public class FeedbackRepository(ApplicationDbContext dbContext) : IFeedbackRepos
 
     public async Task<Feedback?> GetFeedbackByUserAndProductAsync(Guid userId, Guid productId)
     {
-        return await dbContext.Feedbacks.FirstOrDefaultAsync(feedback =>
+        return await dbContext.Feedbacks.Include(feedback => feedback.User).FirstOrDefaultAsync(feedback =>
             feedback.UserId == userId && feedback.ProductId == productId);
     }
 
     public async Task<IEnumerable<Feedback>> GetFeedbacksByProductIdAsync(Guid productId)
     {
-        return await dbContext.Feedbacks.Where(feedback => feedback.ProductId == productId).ToListAsync();
+        return await dbContext.Feedbacks.Include(feedback => feedback.User)
+            .Where(feedback => feedback.ProductId == productId).ToListAsync();
     }
 }

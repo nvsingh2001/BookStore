@@ -15,8 +15,8 @@ riderModule.iml
 node_modules/
 dist/
 
-BookStore/jwt-private.pem
-BookStore/jwt-public.pem
+BookStore.Api/jwt-private.pem
+BookStore.Api/jwt-public.pem
 
 Swagger UI.pdf
 

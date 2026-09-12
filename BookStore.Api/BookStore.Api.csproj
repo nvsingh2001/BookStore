@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <UserSecretsId>3f051891-233e-4e06-9f9e-be66fe448c68</UserSecretsId>
+        <RootNamespace>BookStore</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

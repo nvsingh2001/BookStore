@@ -15,7 +15,8 @@ public class CartItemRepository(ApplicationDbContext dbContext) : ICartItemRepos
 
     public async Task<CartItem?> GetCartItemByIdAsync(Guid cartItemId)
     {
-        return await dbContext.CartItems.FirstOrDefaultAsync(cartItem => cartItem.CartItemId == cartItemId);
+        return await dbContext.CartItems.Include(cartItem => cartItem.Product)
+            .FirstOrDefaultAsync(cartItem => cartItem.CartItemId == cartItemId);
     }
 
     public async Task<CartItem?> GetCartItemByUserAndProductAsync(Guid userId, Guid productId)
@@ -26,7 +27,8 @@ public class CartItemRepository(ApplicationDbContext dbContext) : ICartItemRepos
 
     public async Task<IEnumerable<CartItem>> GetCartItemsByUserIdAsync(Guid userId)
     {
-        return await dbContext.CartItems.Where(cartItem => cartItem.UserId == userId).ToListAsync();
+        return await dbContext.CartItems.Include(cartItem => cartItem.Product)
+            .Where(cartItem => cartItem.UserId == userId).ToListAsync();
     }
 
     public async Task<CartItem> UpdateCartItemAsync(CartItem cartItem)

@@ -21,7 +21,8 @@ public class WishlistItemRepository(ApplicationDbContext dbContext) : IWishlistI
 
     public async Task<IEnumerable<WishlistItem>> GetWishlistItemsByUserIdAsync(Guid userId)
     {
-        return await dbContext.WishlistItems.Where(wishlistItem => wishlistItem.UserId == userId).ToListAsync();
+        return await dbContext.WishlistItems.Include(wishlistItem => wishlistItem.Product)
+            .Where(wishlistItem => wishlistItem.UserId == userId).ToListAsync();
     }
 
     public async Task RemoveWishlistItemAsync(Guid userId, Guid productId)

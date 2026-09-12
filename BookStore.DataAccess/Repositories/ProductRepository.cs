@@ -1,11 +1,15 @@
+using BookStore.DataAccess.Exceptions;
 using BookStore.DataAccess.Interfaces;
 using BookStore.DomainModel.Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.DataAccess.Repositories;
 
 public class ProductRepository(ApplicationDbContext dbContext) : IProductRepository
 {
+    private const int ForeignKeyViolation = 547;
+
     public async Task<Product> CreateProductAsync(Product product)
     {
         dbContext.Products.Add(product);
@@ -36,7 +40,15 @@ public class ProductRepository(ApplicationDbContext dbContext) : IProductReposit
         if (product is null) return;
 
         dbContext.Products.Remove(product);
-        await dbContext.SaveChangesAsync();
+
+        try
+        {
+            await dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is SqlException { Number: ForeignKeyViolation })
+        {
+            throw new ForeignKeyConstraintException("Product cannot be deleted because it has existing orders", ex);
+        }
     }
 
     public async Task<bool> ProductExistsAsync(Guid id)
