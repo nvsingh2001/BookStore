@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using BookStore.BusinessLogic.Interfaces;
+using BookStore.DomainModel.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -20,13 +21,13 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         _privateKey = new RsaSecurityKey(rsa);
     }
 
-    public string GenerateToken(Guid userId, string email, string role)
+    public string GenerateToken(Guid userId, string email, UserRole role)
     {
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
             new Claim(ClaimTypes.Email, email),
-            new Claim(ClaimTypes.Role, role)
+            new Claim(ClaimTypes.Role, role.ToString())
         };
 
         var token = new JwtSecurityToken(

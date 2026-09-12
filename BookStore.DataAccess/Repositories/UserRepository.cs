@@ -1,15 +1,32 @@
+using BookStore.DataAccess.Exceptions;
 using BookStore.DataAccess.Interfaces;
 using BookStore.DomainModel.Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.DataAccess.Repositories;
 
 public class UserRepository(ApplicationDbContext dbContext) : IUserRepository
 {
+    private const int UniqueConstraintViolation = 2627;
+    private const int UniqueIndexViolation = 2601;
+
     public async Task<User> CreateUserAsync(User user)
     {
         dbContext.Users.Add(user);
-        await dbContext.SaveChangesAsync();
+
+        try
+        {
+            await dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is SqlException
+        {
+            Number: UniqueConstraintViolation or UniqueIndexViolation
+        })
+        {
+            throw new DuplicateKeyException("A user with this email or phone already exists", ex);
+        }
+
         return user;
     }
 

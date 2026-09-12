@@ -57,6 +57,11 @@ public class EmailVerificationTokenService : IEmailVerificationTokenService
 
         var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
 
+        var purposeClaim = principal.FindFirst("Purpose");
+
+        if (purposeClaim is null || purposeClaim.Value != "email_verification")
+            throw new SecurityTokenException("Token is not valid for email verification");
+
         var idClaim = principal.FindFirst(ClaimTypes.NameIdentifier)
                       ?? throw new SecurityTokenException("Token missing user id claim");
 
