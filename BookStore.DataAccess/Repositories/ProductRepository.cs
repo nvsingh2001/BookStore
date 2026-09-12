@@ -55,4 +55,15 @@ public class ProductRepository(ApplicationDbContext dbContext) : IProductReposit
     {
         return await dbContext.Products.AnyAsync(product => product.ProductId == id);
     }
+
+    public async Task<bool> DecrementStockAsync(Guid productId, int quantity)
+    {
+        var rowsAffected = await dbContext.Products
+            .Where(product => product.ProductId == productId && product.Quantity >= quantity)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(
+                product => product.Quantity,
+                product => product.Quantity - quantity));
+
+        return rowsAffected > 0;
+    }
 }

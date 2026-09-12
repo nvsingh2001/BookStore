@@ -10,4 +10,5 @@ public interface IProductRepository
     Task<Product> UpdateProductAsync(Product product);
     Task DeleteProductAsync(Guid id);
     Task<bool> ProductExistsAsync(Guid id);
+    Task<bool> DecrementStockAsync(Guid productId, int quantity);
 }

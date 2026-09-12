@@ -48,4 +48,17 @@ public class CustomerAddressService(
 
         return defaultAddress;
     }
+
+    public async Task<CustomerAddress> GetAddressByIdAsync(Guid userId, Guid addressId)
+    {
+        var address = await customerAddressRepository.GetAddressByIdAsync(addressId);
+
+        if (address is null)
+            throw new NotFoundException("Address not found");
+
+        if (address.UserId != userId)
+            throw new ForbiddenException("You do not have access to this address");
+
+        return address;
+    }
 }

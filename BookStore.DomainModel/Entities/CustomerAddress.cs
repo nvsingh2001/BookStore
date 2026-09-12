@@ -21,12 +21,10 @@ public class CustomerAddress
     public string FullAddress { get; set; }
 
     [Required(ErrorMessage = "City is required")]
-    [MinLength(6, ErrorMessage = "Min length is 6")]
     [MaxLength(255, ErrorMessage = "Max length is 255")]
     public string City { get; set; }
 
     [Required(ErrorMessage = "State is required")]
-    [MinLength(6, ErrorMessage = "Min length is 6")]
     [MaxLength(255, ErrorMessage = "Max length is 255")]
     public string State { get; set; }
 
