@@ -17,3 +17,6 @@ dist/
 
 BookStore/jwt-private.pem
 BookStore/jwt-public.pem
+
+Swagger UI.pdf
+
