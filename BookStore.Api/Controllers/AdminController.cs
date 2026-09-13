@@ -6,9 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.Controllers;
 
-[ApiController]
 [Route("api/[controller]")]
-public class AdminController(IAdminService adminService) : ControllerBase
+public class AdminController(IAdminService adminService) : ApiControllerBase
 {
     [HttpPost]
     [Authorize(Roles = "Admin")]
@@ -26,8 +25,8 @@ public class AdminController(IAdminService adminService) : ControllerBase
 
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<AdminAuthResponseDto>>> LoginAdminAsync(
         [FromBody] AdminLoginRequestDto adminLoginRequestDto)
     {
