@@ -6,6 +6,7 @@ using BookStore.DataAccess;
 using BookStore.DataAccess.Interfaces;
 using BookStore.DataAccess.Repositories;
 using BookStore.DomainModel.Utilities;
+using BookStore.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -115,6 +116,8 @@ try
     }
 
     app.UseHttpsRedirection();
+
+    app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
     app.UseAuthentication();
 
