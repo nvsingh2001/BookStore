@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using BookStore;
 using BookStore.BusinessLogic.Interfaces;
 using BookStore.BusinessLogic.Mapping;
 using BookStore.BusinessLogic.Services;
@@ -107,6 +108,8 @@ try
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
     var app = builder.Build();
+
+    await AdminBootstrapper.EnsureBootstrapAdminAsync(app.Services);
 
     // Configure the HTTP request pipeline.
     if (!app.Environment.IsProduction())

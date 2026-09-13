@@ -38,6 +38,11 @@ public class AdminRepository(ApplicationDbContext dbContext) : IAdminRepository
         return await dbContext.Admins.AnyAsync(admin => admin.Email == email || admin.Phone == phone);
     }
 
+    public async Task<bool> AnyAdminExistsAsync()
+    {
+        return await dbContext.Admins.AnyAsync();
+    }
+
     public async Task<Admin?> GetAdminByIdAsync(Guid id)
     {
         return await dbContext.Admins.FirstOrDefaultAsync(admin => admin.AdminId == id);
