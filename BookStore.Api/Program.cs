@@ -7,6 +7,7 @@ using BookStore.DataAccess;
 using BookStore.DataAccess.Interfaces;
 using BookStore.DataAccess.Repositories;
 using BookStore.DomainModel.Utilities;
+using BookStore.Infrastructure.Caching;
 using BookStore.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using NLog;
 using NLog.Web;
+using StackExchange.Redis;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("Initializing application");
@@ -82,6 +84,11 @@ try
     builder.Services.AddSingleton<IEmailVerificationTokenService, EmailVerificationTokenService>();
 
     builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(UserProfile)));
+
+    var redisOptions = ConfigurationOptions.Parse(builder.Configuration["Redis:ConnectionString"] ?? "");
+    redisOptions.AbortOnConnectFail = false;
+    builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisOptions));
+    builder.Services.AddSingleton<IProductCache, RedisProductCache>();
 
     var rsa = RSA.Create();
     rsa.ImportFromPem(File.ReadAllText(builder.Configuration["JwtSettings:PublicKey"] ?? ""));
