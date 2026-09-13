@@ -8,7 +8,8 @@ using BookStore.DomainModel.Entities;
 
 namespace BookStore.BusinessLogic.Services;
 
-public class ProductService(IProductRepository productRepository, IMapper mapper) : IProductService
+public class ProductService(IProductRepository productRepository, IProductCache productCache, IMapper mapper)
+    : IProductService
 {
     public async Task<ProductResponseDto> CreateProductAsync(ProductRequestDto productRequestDto, Guid adminId)
     {
@@ -27,21 +28,38 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
 
         var result = await productRepository.CreateProductAsync(newProduct);
 
+        await productCache.InvalidateAllProductsCacheAsync();
+
         return mapper.Map<ProductResponseDto>(result);
     }
 
     public async Task<ProductResponseDto> GetProductByIdAsync(Guid productId)
     {
+        var cached = await productCache.GetProductAsync(productId);
+        if (cached is not null)
+            return cached;
+
         var product = await productRepository.GetProductByIdAsync(productId);
 
-        return product is null
-            ? throw new NotFoundException("Product not found")
-            : mapper.Map<ProductResponseDto>(product);
+        if (product is null)
+            throw new NotFoundException("Product not found");
+
+        var mapped = mapper.Map<ProductResponseDto>(product);
+        await productCache.SetProductAsync(productId, mapped);
+
+        return mapped;
     }
 
     public async Task<List<ProductResponseDto>> GetAllProductsAsync()
     {
-        return mapper.Map<List<ProductResponseDto>>(await productRepository.GetAllProductsAsync());
+        var cached = await productCache.GetProductsAsync();
+        if (cached is not null)
+            return cached;
+
+        var products = mapper.Map<List<ProductResponseDto>>(await productRepository.GetAllProductsAsync());
+        await productCache.SetProductsAsync(products);
+
+        return products;
     }
 
     public async Task<ProductResponseDto> UpdateProductAsync(Guid productId, ProductRequestDto productRequestDto)
@@ -60,6 +78,10 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         product.LastModifiedDate = DateTime.UtcNow;
 
         var result = await productRepository.UpdateProductAsync(product);
+
+        await productCache.InvalidateProductCacheAsync(productId);
+        await productCache.InvalidateAllProductsCacheAsync();
+
         return mapper.Map<ProductResponseDto>(result);
     }
 
@@ -78,5 +100,8 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         {
             throw new ConflictException("Product cannot be deleted", ex);
         }
+
+        await productCache.InvalidateProductCacheAsync(productId);
+        await productCache.InvalidateAllProductsCacheAsync();
     }
 }
