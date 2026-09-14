@@ -10,6 +10,7 @@ using BookStore.DataAccess.Interfaces;
 using BookStore.DataAccess.Repositories;
 using BookStore.DomainModel.Utilities;
 using BookStore.Infrastructure.Caching;
+using BookStore.Infrastructure.Email;
 using BookStore.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -93,6 +94,7 @@ try
     builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisOptions));
     builder.Services.AddSingleton<ITokenBlockList, RedisTokenBlocklist>();
     builder.Services.AddSingleton<IProductCache, RedisProductCache>();
+    builder.Services.AddSingleton<IEmailSender, MailKitEmailSender>();
 
     var rsa = RSA.Create();
     rsa.ImportFromPem(File.ReadAllText(builder.Configuration["JwtSettings:PublicKey"] ?? ""));

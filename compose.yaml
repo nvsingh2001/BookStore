@@ -13,6 +13,11 @@
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+      Smtp__Host: mailpit
+      Smtp__Port: 1025
+      Smtp__FromAddress: noreply@bookstore.local
+      Smtp__FromName: BookStore
+      AppSettings__BaseUrl: "http://localhost:8080"
     depends_on:
       mssql:
         condition: service_healthy
