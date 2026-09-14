@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using BookStore;
 using BookStore.BusinessLogic.Interfaces;
@@ -88,6 +90,7 @@ try
     var redisOptions = ConfigurationOptions.Parse(builder.Configuration["Redis:ConnectionString"] ?? "");
     redisOptions.AbortOnConnectFail = false;
     builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisOptions));
+    builder.Services.AddSingleton<ITokenBlockList, RedisTokenBlocklist>();
     builder.Services.AddSingleton<IProductCache, RedisProductCache>();
 
     var rsa = RSA.Create();
@@ -106,6 +109,17 @@ try
             ValidIssuer = builder.Configuration.GetSection("JwtSettings:Issuer").Value,
             ValidAudience = builder.Configuration.GetSection("JwtSettings:Audience").Value,
             IssuerSigningKey = publicKey
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = async context =>
+            {
+                var jti = context.Principal?.FindFirstValue(JwtRegisteredClaimNames.Jti);
+                if (jti is null) return;
+
+                var blocklist = context.HttpContext.RequestServices.GetRequiredService<ITokenBlockList>();
+                if (await blocklist.IsTokenBlockedAsync(jti)) context.Fail("Token has been revoked");
+            }
         };
     });
 
