@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Verify your email</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f5f7;
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    color: #1f2933;
+  }
+  .page {
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+  .card {
+    width: 100%;
+    max-width: 480px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: #1f6feb;
+  }
+  .header h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 20px;
+    letter-spacing: 0.5px;
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 32px 28px;
+  }
+  .body p {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 15px;
+  }
+  .cta-row {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    background-color: #1f6feb;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 8px;
+  }
+  .muted {
+    color: #6b7280;
+    font-size: 13px;
+  }
+  .footer {
+    display: flex;
+    justify-content: center;
+    padding: 20px 28px 28px;
+  }
+  .footer p {
+    margin: 0;
+    color: #9aa4b2;
+    font-size: 12px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="header">
+        <h1>BookStore</h1>
+      </div>
+      <div class="body">
+        <p>Hi there,</p>
+        <p>Thanks for creating an account. Confirm your email address to finish setting up your account.</p>
+        <div class="cta-row">
+          <a class="cta" href="{{Link}}">Verify email address</a>
+        </div>
+        <p class="muted">If the button doesn't work, copy and paste this link into your browser:</p>
+        <p class="muted">{{Link}}</p>
+      </div>
+      <div class="footer">
+        <p>If you didn't create a BookStore account, you can safely ignore this email.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

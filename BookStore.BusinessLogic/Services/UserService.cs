@@ -5,7 +5,9 @@ using BookStore.DataAccess.Exceptions;
 using BookStore.DataAccess.Interfaces;
 using BookStore.DomainModel.DTOs;
 using BookStore.DomainModel.Entities;
+using BookStore.BusinessLogic.Utilities;
 using BookStore.DomainModel.Enums;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BookStore.BusinessLogic.Services;
@@ -17,6 +19,8 @@ public class UserService(
     IMapper mapper,
     ITokenBlockList tokenBlockList,
     IPasswordResetTokenService passwordResetTokenService,
+    IEmailSender emailSender,
+    IConfiguration configuration,
     IPasswordHasher passwordHasher) : IUserService
 {
     public async Task<UserResponseDto> RegisterUserAsync(UserRegistrationRequestDto userDto)
@@ -45,6 +49,14 @@ public class UserService(
         {
             throw new ConflictException("Email or Phone already linked to another account", ex);
         }
+
+        var token = emailVerificationTokenService.GenerateToken(result.UserId, result.Email);
+        var link = $"{configuration["AppSettings:BaseUrl"]}/api/user/verify-email?token={token}";
+        var body = EmailTemplateLoader.Load("VerificationEmail.html", new Dictionary<string, string>
+        {
+            ["{{Link}}"] = link
+        });
+        await emailSender.SendEmailAsync(result.Email, "Verify your email", body);
 
         return mapper.Map<UserResponseDto>(result);
     }
@@ -110,6 +122,11 @@ public class UserService(
         if (user is null) return;
 
         var token = passwordResetTokenService.GenerateToken(user.UserId, user.Email);
+        var body = EmailTemplateLoader.Load("PasswordResetEmail.html", new Dictionary<string, string>
+        {
+            ["{{Code}}"] = token
+        });
+        await emailSender.SendEmailAsync(user.Email, "Reset your password", body);
     }
 
     public async Task ResetPasswordAsync(string token, string newPassword)

@@ -29,6 +29,7 @@
 
     <ItemGroup>
         <None Update="nlog.config" CopyToOutputDirectory="PreserveNewest"/>
+        <None Update="EmailTemplates\*.html" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
     <ItemGroup>
