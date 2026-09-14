@@ -84,6 +84,7 @@ try
     builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
     builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
     builder.Services.AddSingleton<IEmailVerificationTokenService, EmailVerificationTokenService>();
+    builder.Services.AddSingleton<IPasswordResetTokenService, PasswordResetTokenService>();
 
     builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(UserProfile)));
 
