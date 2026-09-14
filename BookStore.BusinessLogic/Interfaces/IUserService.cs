@@ -8,4 +8,5 @@ public interface IUserService
     Task<AuthResponseDto> LoginUserAsync(UserLoginRequestDto userDto);
     Task<UserResponseDto> VerifyEmailAsync(string token);
     Task<UserResponseDto> GetUserByIdAsync(Guid userId);
+    Task LogoutUserAsync(string jti, TimeSpan remainingLifetime);
 }

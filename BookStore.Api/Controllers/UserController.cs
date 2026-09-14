@@ -51,4 +51,16 @@ public class UserController(IUserService userService) : ApiControllerBase
         var user = await userService.GetUserByIdAsync(userId);
         return Ok(ApiResponse<UserResponseDto>.SuccessResponse(user));
     }
+
+    [HttpPost("logout")]
+    [Authorize(Roles = "User")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<ApiResponse<object>>> LogoutAsync()
+    {
+        if (CurrentTokenJti != null)
+            await userService.LogoutUserAsync(CurrentTokenJti, CurrentTokenExpiresAt.Subtract(DateTimeOffset.UtcNow));
+        return ApiResponse<object>.SuccessResponse(null!, "User logout Successfully");
+    }
 }

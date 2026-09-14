@@ -14,6 +14,7 @@ public class UserService(
     IJwtTokenGenerator jwtTokenGenerator,
     IEmailVerificationTokenService emailVerificationTokenService,
     IMapper mapper,
+    ITokenBlockList tokenBlockList,
     IPasswordHasher passwordHasher) : IUserService
 {
     public async Task<UserResponseDto> RegisterUserAsync(UserRegistrationRequestDto userDto)
@@ -85,5 +86,11 @@ public class UserService(
         var user = await userRepository.GetUserByIdAsync(userId);
 
         return user is null ? throw new NotFoundException("User not found") : mapper.Map<UserResponseDto>(user);
+    }
+
+    public async Task LogoutUserAsync(string jti, TimeSpan remainingLifetime)
+    {
+        if (remainingLifetime <= TimeSpan.Zero) return;
+        await tokenBlockList.BlockTokenAsync(jti, remainingLifetime);
     }
 }
