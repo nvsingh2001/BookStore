@@ -63,4 +63,24 @@ public class UserController(IUserService userService) : ApiControllerBase
             await userService.LogoutUserAsync(CurrentTokenJti, CurrentTokenExpiresAt.Subtract(DateTimeOffset.UtcNow));
         return ApiResponse<object>.SuccessResponse(null!, "User logout Successfully");
     }
+
+    [HttpPost("password-reset-request")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ApiResponse<object>>> PasswordResetRequestAsync(
+        [FromBody] PasswordResetRequestDto passwordResetRequestDto)
+    {
+        await userService.RequestPasswordResetAsync(passwordResetRequestDto.Email);
+        return Ok(ApiResponse<object>.SuccessResponse(null!, "Password Reset request processed successfully"));
+    }
+
+    [HttpPost("password-reset")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ApiResponse<object>>> PasswordResetAsync(
+        [FromBody] PasswordResetDto passwordResetDto)
+    {
+        await userService.ResetPasswordAsync(passwordResetDto.Token, passwordResetDto.NewPassword);
+        return Ok(ApiResponse<object>.SuccessResponse(null!, "Password Reset Successfully"));
+    }
 }

@@ -6,6 +6,7 @@ using BookStore.DataAccess.Interfaces;
 using BookStore.DomainModel.DTOs;
 using BookStore.DomainModel.Entities;
 using BookStore.DomainModel.Enums;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BookStore.BusinessLogic.Services;
 
@@ -15,6 +16,7 @@ public class UserService(
     IEmailVerificationTokenService emailVerificationTokenService,
     IMapper mapper,
     ITokenBlockList tokenBlockList,
+    IPasswordResetTokenService passwordResetTokenService,
     IPasswordHasher passwordHasher) : IUserService
 {
     public async Task<UserResponseDto> RegisterUserAsync(UserRegistrationRequestDto userDto)
@@ -68,7 +70,15 @@ public class UserService(
 
     public async Task<UserResponseDto> VerifyEmailAsync(string token)
     {
-        var userId = emailVerificationTokenService.ValidateAndExtractUserId(token);
+        Guid userId;
+        try
+        {
+            userId = emailVerificationTokenService.ValidateAndExtractUserId(token);
+        }
+        catch (Exception ex) when (ex is SecurityTokenException or ArgumentException)
+        {
+            throw new ValidationException("Invalid or expired verification token", ex);
+        }
 
         var user = await userRepository.GetUserByIdAsync(userId);
 
@@ -92,5 +102,36 @@ public class UserService(
     {
         if (remainingLifetime <= TimeSpan.Zero) return;
         await tokenBlockList.BlockTokenAsync(jti, remainingLifetime);
+    }
+
+    public async Task RequestPasswordResetAsync(string email)
+    {
+        var user = await userRepository.GetUserByEmailAsync(email);
+        if (user is null) return;
+
+        var token = passwordResetTokenService.GenerateToken(user.UserId, user.Email);
+    }
+
+    public async Task ResetPasswordAsync(string token, string newPassword)
+    {
+        Guid userId;
+        try
+        {
+            userId = passwordResetTokenService.ValidateAndExtractUserId(token);
+        }
+        catch (Exception ex) when (ex is SecurityTokenException or ArgumentException)
+        {
+            throw new ValidationException("Invalid or expired reset token", ex);
+        }
+
+
+        var user = await userRepository.GetUserByIdAsync(userId);
+
+        if (user is null)
+            throw new NotFoundException("User not found");
+
+        user.Password = passwordHasher.Hash(newPassword);
+
+        await userRepository.UpdateUserAsync(user);
     }
 }
