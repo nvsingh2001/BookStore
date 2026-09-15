@@ -7,13 +7,22 @@ function labelToAddressType(label) {
   return label === 'Work' ? 'Office' : label
 }
 
-export default function AddressForm({ onSubmit, submitting }) {
-  const [fields, setFields] = useState({
-    addressType: 'Home',
-    fullAddress: '',
-    city: '',
-    state: '',
-  })
+export function addressTypeToLabel(type) {
+  return type === 'Office' ? 'Work' : type
+}
+
+export default function AddressForm({
+  onSubmit,
+  submitting,
+  initialValues,
+  submitLabel = 'Save Address & Continue',
+}) {
+  const [fields, setFields] = useState(() => ({
+    addressType: initialValues?.addressType ? addressTypeToLabel(initialValues.addressType) : 'Home',
+    fullAddress: initialValues?.fullAddress ?? '',
+    city: initialValues?.city ?? '',
+    state: initialValues?.state ?? '',
+  }))
   const [errors, setErrors] = useState({})
 
   function handleChange(e) {
@@ -106,7 +115,7 @@ export default function AddressForm({ onSubmit, submitting }) {
         </div>
       </div>
       <Button type="submit" disabled={submitting}>
-        {submitting ? 'Saving...' : 'Save Address & Continue'}
+        {submitting ? 'Saving...' : submitLabel}
       </Button>
     </form>
   )
