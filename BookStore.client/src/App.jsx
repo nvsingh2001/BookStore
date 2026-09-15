@@ -14,17 +14,8 @@ import AdminLogin from './routes/admin/AdminLogin'
 import AdminProducts from './routes/admin/AdminProducts'
 import AdminProductForm from './routes/admin/AdminProductForm'
 import AdminCreateAdmin from './routes/admin/AdminCreateAdmin'
-import { withAuth } from './lib/withAuth'
-import { withAdminAuth } from './lib/withAdminAuth'
-
-const GuardedCart = withAuth(Cart)
-const GaurdedWishlist = withAuth(Wishlist)
-const GaurdedCheckout = withAuth(Checkout)
-const GaurdedOrderConfirmation = withAuth(OrderConfirmation)
-const GaurdedProfile = withAuth(Profile)
-const GaurdedMyOrders = withAuth(MyOrders)
-
-const GuardedAdminLayout = withAdminAuth(AdminLayout)
+import RequireAuth from './lib/RequireAuth'
+import RequireAdminAuth from './lib/RequireAdminAuth'
 
 export default function App() {
   return (
@@ -33,16 +24,65 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/books/:bookId" element={<BookDetail />} />
-          <Route path="/cart" element={<GuardedCart />} />
-          <Route path="/checkout" element={<GaurdedCheckout />} />
-          <Route path="/checkout/confirmation" element={<GaurdedOrderConfirmation />} />
-          <Route path="/profile" element={<GaurdedProfile />} />
-          <Route path="/orders" element={<GaurdedMyOrders />} />
-          <Route path="/wishlist" element={<GaurdedWishlist />} />
+          <Route
+            path="/cart"
+            element={
+              <RequireAuth>
+                <Cart />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <RequireAuth>
+                <Checkout />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/checkout/confirmation"
+            element={
+              <RequireAuth>
+                <OrderConfirmation />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <RequireAuth>
+                <Profile />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <RequireAuth>
+                <MyOrders />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/wishlist"
+            element={
+              <RequireAuth>
+                <Wishlist />
+              </RequireAuth>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<GuardedAdminLayout />}>
+        <Route
+          path="/admin"
+          element={
+            <RequireAdminAuth>
+              <AdminLayout />
+            </RequireAdminAuth>
+          }
+        >
           <Route index element={<Navigate to="/admin/products" replace />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="products/new" element={<AdminProductForm />} />
