@@ -5,7 +5,8 @@ const http = axios.create({ baseURL: API_BASE_URL })
 
 export function attachStore(store) {
   http.interceptors.request.use((config) => {
-    const token = store.getState().auth.token
+    const { auth, admin } = store.getState()
+    const token = admin?.token ?? auth.token
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -19,7 +20,8 @@ export function attachStore(store) {
     },
     (error) => {
       if (error.response?.status === 401) {
-        store.dispatch({ type: 'auth/logout' })
+        const { admin } = store.getState()
+        store.dispatch({ type: admin?.token ? 'admin/logout' : 'auth/logout' })
       }
       if (error.response?.data) {
         error.message = error.response.data.message ?? error.message
