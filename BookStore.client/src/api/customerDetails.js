@@ -1,24 +1,31 @@
 import http from './http'
 
+export const ADDRESS_TYPES = ['Home', 'Office', 'Other']
+
 export function toApiAddressType(type) {
-  return type === 'Work' ? 'Office' : type
+  const value = ADDRESS_TYPES.indexOf(type)
+  if (value === -1) {
+    throw new Error(`Unknown address type: ${type}`)
+  }
+  return value
 }
 
-export function fromApiAddressType(type) {
-  return type === 'Office' ? 'Work' : type
+export function fromApiAddressType(value) {
+  return ADDRESS_TYPES[value]
 }
 
 export const customerDetails = {
-  update({ addressType, fullAddress, city, state }) {
+  update({ addressType, fullAddress, city, state, isDefault = true }) {
     const payload = {
       addressType: toApiAddressType(addressType),
       fullAddress,
       city,
       state,
+      isDefault,
     }
-    return http.put('/edit_user', payload).then((r) => ({
+    return http.post('/CustomerAddress', payload).then((r) => ({
       ...r.data,
-      addressType: fromApiAddressType(r.data.addressType) ?? r.data.addressType,
+      addressType: fromApiAddressType(r.data.addressType),
     }))
   },
 }

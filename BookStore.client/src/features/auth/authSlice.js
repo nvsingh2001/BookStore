@@ -30,7 +30,7 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.status = 'success'
         state.token = action.payload.token
-        state.user = action.payload.user ?? { email: action.meta.arg.email }
+        state.user = action.payload.user
       })
       .addCase(login.rejected, (state, action) => {
         state.status = 'error'

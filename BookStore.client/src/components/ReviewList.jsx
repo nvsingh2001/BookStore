@@ -23,8 +23,11 @@ export default function ReviewList({ productId, reloadKey }) {
   return (
     <ul className="list-unstyled">
       {data.map((review) => (
-        <li key={review._id} className="border-bottom py-2">
-          <StarRating rating={review.rating} />
+        <li key={review.feedbackId} className="border-bottom py-2">
+          <div className="d-flex align-items-center gap-2">
+            <span className="fw-semibold">{review.fullName}</span>
+            <StarRating rating={review.rating} />
+          </div>
           <p className="mb-0">{review.comment}</p>
         </li>
       ))}

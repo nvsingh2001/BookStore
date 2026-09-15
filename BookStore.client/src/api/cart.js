@@ -1,21 +1,31 @@
 import http from './http'
+import { mapBook } from './products'
+
+export function mapCartItem(raw) {
+  return {
+    cartItemId: raw.cartItemId,
+    quantity: raw.quantityToBuy,
+    book: mapBook(raw.product),
+  }
+}
 
 export const cart = {
-  add(productId) {
-    return http.post(`/add_cart_item/${productId}`).then((r) => r.data)
+  async add(productId, quantity = 1) {
+    const { data } = await http.post(`/CartItem/${productId}`, { quantityToBuy: quantity })
+    return mapCartItem(data)
   },
 
-  updateQuantity(cartItemId, quantity) {
-    return http
-      .put(`/cart_item_quantity/${cartItemId}`, { quantityToBuy: quantity })
-      .then((r) => r.data)
+  async updateQuantity(cartItemId, quantity) {
+    const { data } = await http.put(`/CartItem/${cartItemId}`, { quantityToBuy: quantity })
+    return mapCartItem(data)
   },
 
   remove(cartItemId) {
-    return http.delete(`/remove_cart_item/${cartItemId}`).then((r) => r.data)
+    return http.delete(`/CartItem/${cartItemId}`).then((r) => r.data)
   },
 
-  list() {
-    return http.get('/get_cart_items').then((r) => r.data)
+  async list() {
+    const { data } = await http.get('/CartItem')
+    return data.map(mapCartItem)
   },
 }

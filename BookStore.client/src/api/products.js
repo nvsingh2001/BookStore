@@ -3,7 +3,7 @@ import http from './http'
 export function mapBook(raw) {
   const discount = raw.discountPrice ?? 0
   return {
-    id: raw._id,
+    id: raw.productId,
     name: raw.bookName,
     author: raw.author,
     description: raw.description,
@@ -12,17 +12,18 @@ export function mapBook(raw) {
     discount,
     displayPrice: raw.price - discount,
     inStock: raw.quantity > 0,
+    imageUrl: raw.imageUrl,
   }
 }
 
 export const products = {
   async list() {
-    const { data } = await http.get('/get/book')
+    const { data } = await http.get('/Product')
     return data.map(mapBook)
   },
 
   async getById(id) {
-    const all = await products.list()
-    return all.find((book) => book.id === id)
+    const { data } = await http.get(`/Product/${id}`)
+    return mapBook(data)
   },
 }

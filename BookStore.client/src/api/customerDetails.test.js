@@ -1,14 +1,18 @@
 import { toApiAddressType, fromApiAddressType } from './customerDetails'
 
-describe('address type translation', () => {
-  it('translates Work to Office outbound', () => {
-    expect(toApiAddressType('Work')).toBe('Office')
+describe('address type enum encoding', () => {
+  it('encodes address type names to their enum ordinal', () => {
+    expect(toApiAddressType('Home')).toBe(0)
+    expect(toApiAddressType('Office')).toBe(1)
+    expect(toApiAddressType('Other')).toBe(2)
   })
-  it('translates Office to Work outbound', () => {
-    expect(fromApiAddressType('Office')).toBe('Work')
+  it('decodes enum ordinals back to address type names', () => {
+    expect(fromApiAddressType(0)).toBe('Home')
+    expect(fromApiAddressType(1)).toBe('Office')
+    expect(fromApiAddressType(2)).toBe('Other')
   })
-  it('leaves Home and Other unchanged in both directions', () => {
-    expect(toApiAddressType('Home')).toBe('Home')
-    expect(fromApiAddressType('Other')).toBe('Other')
+
+  it('throws on an unrecognized address type name instead of sending -1', () => {
+    expect(() => toApiAddressType('Work')).toThrow('Unknown address type: Work')
   })
 })

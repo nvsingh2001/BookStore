@@ -13,10 +13,17 @@ export function attachStore(store) {
   })
 
   http.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      response.data = response.data.data
+      return response
+    },
     (error) => {
       if (error.response?.status === 401) {
         store.dispatch({ type: 'auth/logout' })
+      }
+      if (error.response?.data) {
+        error.message = error.response.data.message ?? error.message
+        error.fieldErrors = error.response.data.errors ?? []
       }
       return Promise.reject(error)
     },

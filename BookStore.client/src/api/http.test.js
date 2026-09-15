@@ -24,16 +24,30 @@ describe('http response interceptors', () => {
   beforeAll(() => {
     attachStore(store)
   })
+
+  it('unwraps the {success, data} envelope on success', () => {
+    const response = { data: { success: true, message: 'ok', data: { productId: '1' } } }
+    const result = http.interceptors.response.handlers[1].fulfilled(response)
+    expect(result.data).toEqual({ productId: '1' })
+  })
+
   it('dispatches logout on a 401', async () => {
-    const error = { response: { status: 401 } }
+    const error = { response: { status: 401, data: { message: 'No token provided.' } } }
     await expect(http.interceptors.response.handlers[1].rejected(error)).rejects.toBe(error)
     expect(store.dispatch).toHaveBeenCalledWith(logout())
   })
 
   it('does not dispatch logout on other errors', async () => {
     store.dispatch.mockClear()
-    const error = { response: { status: 500 } }
+    const error = { response: { status: 500, data: { message: 'Server error' } } }
     await expect(http.interceptors.response.handlers[1].rejected(error)).rejects.toBe(error)
     expect(store.dispatch).not.toHaveBeenCalled()
+  })
+
+  it('normalizes the error message and field errors from the envelope', async () => {
+    const error = { response: { status: 400, data: { message: 'Invalid Password', errors: [] } } }
+    await expect(http.interceptors.response.handlers[1].rejected(error)).rejects.toBe(error)
+    expect(error.message).toBe('Invalid Password')
+    expect(error.fieldErrors).toEqual([])
   })
 })

@@ -19,10 +19,8 @@ module.exports = merge(common, {
     proxy: [
       {
         context: ['/api'],
-        target: 'https://bookstore.incubation.bridgelabz.com',
+        target: 'http://localhost:8080',
         changeOrigin: true,
-        secure: false,
-        pathRewrite: { '^/api': '/bookstore_user' },
       },
     ],
   },

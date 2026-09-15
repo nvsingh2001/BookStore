@@ -37,16 +37,6 @@ describe('authSlice login thunk reducers', () => {
     expect(state.user).toEqual({ fullName: 'Jane' })
   })
 
-  it('falls back to the submitted email when the response  has no user object', () => {
-    const action = {
-      type: login.fulfilled.type,
-      payload: { token: 'jwt123' },
-      meta: { arg: { email: 'a@b.com', password: 'x' } },
-    }
-    const state = authReducer(undefined, action)
-    expect(state.user).toEqual({ email: 'a@b.com' })
-  })
-
   it('sets status to error on rejected', () => {
     const action = { type: login.rejected.type, error: { message: 'Request failed' } }
     const state = authReducer(undefined, action)

@@ -33,9 +33,15 @@ export default function BookDetail() {
     <div className="container p-4">
       <div className="row g-4">
         <div className="col-md-4">
-          <div className="ratio ratio-1x1 bg-secondary-subtle d-flex align-items-center justify-content-center">
-            <span className="text-secondary small">No Image</span>
-          </div>
+          {book.imageUrl ? (
+            <div className="ratio ratio-1x1">
+              <img src={book.imageUrl} alt={book.name} className="object-fit-cover" />
+            </div>
+          ) : (
+            <div className="ratio ratio-1x1 bg-secondary-subtle d-flex align-items-center justify-content-center">
+              <span className="text-secondary small">No Image</span>
+            </div>
+          )}
         </div>
         <div className="col-md-8">
           <h1 className="h3">{book.name}</h1>
@@ -59,13 +65,11 @@ export default function BookDetail() {
       <h2 className="h4">Customer Feedback</h2>
 
       {token ? (
-        <>
-          <ReviewForm productId={book.id} onSubmitted={() => setReloadKey((k) => k + 1)} />
-          <ReviewList productId={book.id} reloadKey={reloadKey} />
-        </>
+        <ReviewForm productId={book.id} onSubmitted={() => setReloadKey((k) => k + 1)} />
       ) : (
-        <p className="text-secondary">Login to view and leave reviews</p>
+        <p className="text-secondary">Login to leave a review</p>
       )}
+      <ReviewList productId={book.id} reloadKey={reloadKey} />
     </div>
   )
 }

@@ -1,9 +1,15 @@
 export default function BookCard({ book }) {
   return (
     <div className="card h-100">
-      <div className="ratio ratio-1x1 bg-secondary-subtle d-flex align-items-center justify-content-center">
-        <span className="text-secondary small">No Image</span>
-      </div>
+      {book.imageUrl ? (
+        <div className="ratio ratio-1x1">
+          <img src={book.imageUrl} alt={book.name} className="object-fit-cover" />
+        </div>
+      ) : (
+        <div className="ratio ratio-1x1 bg-secondary-subtle d-flex align-items-center justify-content-center">
+          <span className="text-secondary small">No Image</span>
+        </div>
+      )}
       <div className="card-body d-flex flex-column">
         <h3 className="h6 card-title">{book.name}</h3>
         <p className="text-secondary small mb-1">{book.author}</p>
