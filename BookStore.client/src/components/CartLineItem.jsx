@@ -25,7 +25,7 @@ export default function CartLineItem({ item, onQuantityChange, onRemove, disable
       <div className="flex-grow-1">
         <h3 className="h6 mb-1">{book.name}</h3>
         <p className="text-secondary small mb-1">{book.author}</p>
-        <span className="fw-bold">₹{book.displayPrice}</span>
+        <span className="fw-bold">Rs. {book.displayPrice}</span>
       </div>
       <div className="d-flex align-items-center gap-2">
         <Button
@@ -41,7 +41,7 @@ export default function CartLineItem({ item, onQuantityChange, onRemove, disable
         </Button>
       </div>
       <span className="fw-bold text-end" style={{ minWidth: '80px' }}>
-        ₹{(book.displayPrice * quantity).toFixed(2)}
+        Rs. {(book.displayPrice * quantity).toFixed(2)}
       </span>
       <button
         type="button"

@@ -19,7 +19,7 @@ export default function WishlistCard({ item, onRemove, onMoveToCart, disabled })
         <div className="card-body pb-0">
           <h3 className="h6 card-title">{book.name}</h3>
           <p className="text-secondary small mb-1">{book.author}</p>
-          <span className="fw-bold">₹{book.displayPrice}</span>
+          <span className="fw-bold">Rs. {book.displayPrice}</span>
         </div>
       </Link>
       <div className="card-body pt-2 d-flex gap-2">

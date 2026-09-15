@@ -85,13 +85,13 @@ export default function Checkout() {
                 <span>
                   {item.book.name} × {item.quantity}
                 </span>
-                <span>₹{(item.book.displayPrice * item.quantity).toFixed(2)}</span>
+                <span>Rs. {(item.book.displayPrice * item.quantity).toFixed(2)}</span>
               </li>
             ))}
           </ul>
           <div className="d-flex justify-content-between fw-bold py-2">
             <span>Total</span>
-            <span>₹{total.toFixed(2)}</span>
+            <span>Rs. {total.toFixed(2)}</span>
           </div>
           <button
             type="button"

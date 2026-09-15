@@ -80,9 +80,9 @@ export default function BookDetail() {
           <p>{book.description}</p>
           <div className="d-flex align-items-center gap-2 mb-3">
             {book.discount > 0 && (
-              <span className="text-decoration-line-through text-secondary">₹{book.price}</span>
+              <span className="text-decoration-line-through text-secondary">Rs. {book.price}</span>
             )}
-            <span className="fw-bold fs-5">₹{book.displayPrice}</span>
+            <span className="fw-bold fs-5">Rs. {book.displayPrice}</span>
             <span className={`badge ${book.inStock ? 'text-bg-success' : 'text-bg-danger'}`}>
               {book.inStock ? 'In Stock' : 'Out of Stock'}
             </span>

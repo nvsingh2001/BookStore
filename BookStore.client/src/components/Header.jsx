@@ -39,23 +39,38 @@ export default function Header() {
           <input ref={searchRef} type="search" className="form-control" placeholder="Search..." />
         </form>
         <div className="d-flex align-items-center gap-3">
-          <Link to="/profile" className="text-white" title="Profile">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <Link
+            to="/profile"
+            className="text-white text-decoration-none d-flex flex-column align-items-center"
+            title="Profile"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.42 0-8 2.24-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.76-3.58-5-8-5Z" />
             </svg>
+            <span className="small">Profile</span>
           </Link>
-          <Link to="/wishlist" className="text-white" title="Wishlist">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <Link
+            to="/wishlist"
+            className="text-white text-decoration-none d-flex flex-column align-items-center"
+            title="Wishlist"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12 21s-6.7-4.35-9.33-8.2C.86 10.02 1.6 6.6 4.6 5.06 6.9 3.9 9.5 4.7 12 7.4c2.5-2.7 5.1-3.5 7.4-2.34 3 1.54 3.74 4.96 1.93 7.74C18.7 16.65 12 21 12 21Z" />
             </svg>
+            <span className="small">Wishlist</span>
           </Link>
-          <Link to="/cart" className="text-white position-relative" title="Cart">
-            <img src="/assets/supermarket.svg" alt="Cart" width="24" height="24" />
+          <Link
+            to="/cart"
+            className="text-white text-decoration-none position-relative d-flex flex-column align-items-center"
+            title="Cart"
+          >
+            <img src="/assets/supermarket.svg" alt="" width="22" height="22" />
             {cartCount > 0 && (
               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger">
                 {cartCount}
               </span>
             )}
+            <span className="small">Cart</span>
           </Link>
           {user ? (
             <div className="d-flex align-items-center gap-2 text-white">

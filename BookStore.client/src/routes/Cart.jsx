@@ -76,7 +76,7 @@ export default function Cart() {
             <DeliveryLocationSelect value={deliveryLocation} onChange={setDeliveryLocation} />
             <div className="d-flex justify-content-between mb-3">
               <span>Subtotal</span>
-              <span className="fw-bold">₹{total.toFixed(2)}</span>
+              <span className="fw-bold">Rs. {total.toFixed(2)}</span>
             </div>
             <Link to="/checkout" className="btn btn-primary w-100">
               Proceed to Checkout

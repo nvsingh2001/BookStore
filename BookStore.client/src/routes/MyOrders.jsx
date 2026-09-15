@@ -34,7 +34,7 @@ export default function MyOrders() {
                 <span>
                   {item.productName} × {item.quantity}
                 </span>
-                <span>₹{item.price.toFixed(2)}</span>
+                <span>Rs. {item.price.toFixed(2)}</span>
               </li>
             ))}
           </ul>

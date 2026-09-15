@@ -40,7 +40,10 @@ export default function Home() {
 
   return (
     <div className="container py-4">
-      <div className="d-flex justify-content-end mb-3">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h1 className="h5 mb-0">
+          Books ({visibleBooks.length} {visibleBooks.length === 1 ? 'item' : 'items'})
+        </h1>
         <SortDropdown value={sort} onChange={setSort} />
       </div>
       <BookGrid books={visibleBooks} />

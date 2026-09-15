@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 
-export default function Modal({ isOpen, onClose, children }) {
+export default function Modal({ isOpen, onClose, children, className = '' }) {
   const modalRef = useRef(null)
   const triggerRef = useRef(null)
 
@@ -28,7 +28,7 @@ export default function Modal({ isOpen, onClose, children }) {
   return createPortal(
     <div className="modal-backdrop-custom" onClick={onClose}>
       <div
-        className="modal-content-custom"
+        className={`modal-content-custom ${className}`.trim()}
         ref={modalRef}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
