@@ -40,8 +40,8 @@ export default function Header() {
           <img src="/assets/education.svg" alt="Logo" className="d-inline-block align-text-top" />
           BookStore
         </Link>
-        <form onSubmit={handleSearchSubmit} className="d-flex">
-          <input ref={searchRef} type="search" className="form-control" placeholder="Search..." />
+        <form onSubmit={handleSearchSubmit} className="d-flex flex-grow-1 mx-4" style={{ maxWidth: '640px' }}>
+          <input ref={searchRef} type="search" className="form-control w-100" placeholder="Search..." />
         </form>
         <div className="d-flex align-items-center gap-3">
           {token ? (

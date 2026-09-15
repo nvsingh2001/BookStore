@@ -3,10 +3,14 @@ import Header from '../components/Header'
 
 export default function Layout() {
   return (
-    <>
+    <div className="d-flex flex-column min-vh-100">
       <Header />
-      <Outlet />
-      <footer className="text-center text-secondary py-4">&copy; 2026 Bookstore</footer>
-    </>
+      <main className="flex-grow-1">
+        <Outlet />
+      </main>
+      <footer className="bg-dark text-white text-center py-3">
+        Copyright &copy; 2026, BookStore. All Rights Reserved.
+      </footer>
+    </div>
   )
 }
