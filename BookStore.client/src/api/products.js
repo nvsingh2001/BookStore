@@ -26,4 +26,27 @@ export const products = {
     const { data } = await http.get(`/Product/${id}`)
     return mapBook(data)
   },
+
+  async create(fields) {
+    const { data } = await http.post('/Product', fields)
+    return mapBook(data)
+  },
+
+  async update(id, fields) {
+    const { data } = await http.put(`/Product/${id}`, fields)
+    return mapBook(data)
+  },
+
+  remove(id) {
+    return http.delete(`/Product/${id}`).then((r) => r.data)
+  },
+
+  async uploadImage(id, file) {
+    const formData = new FormData()
+    formData.append('file', file)
+    const { data } = await http.post(`/Product/${id}/image`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return mapBook(data)
+  },
 }

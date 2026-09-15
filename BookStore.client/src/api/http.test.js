@@ -1,4 +1,5 @@
 import { logout } from '../features/auth/authSlice'
+import { logout as adminLogout } from '../features/admin/adminSlice'
 import http, { attachStore } from './http'
 
 describe('http request interceptor', () => {
@@ -24,6 +25,9 @@ describe('http response interceptors', () => {
   beforeAll(() => {
     attachStore(store)
   })
+  beforeEach(() => {
+    store.getState.mockReturnValue({ auth: { token: null }, admin: { token: null } })
+  })
 
   it('unwraps the {success, data} envelope on success', () => {
     const response = { data: { success: true, message: 'ok', data: { productId: '1' } } }
@@ -35,6 +39,14 @@ describe('http response interceptors', () => {
     const error = { response: { status: 401, data: { message: 'No token provided.' } } }
     await expect(http.interceptors.response.handlers[1].rejected(error)).rejects.toBe(error)
     expect(store.dispatch).toHaveBeenCalledWith(logout())
+  })
+
+  it('dispatches admin logout on a 401 when an admin session is active', async () => {
+    store.dispatch.mockClear()
+    store.getState.mockReturnValue({ auth: { token: null }, admin: { token: 'admin-jwt' } })
+    const error = { response: { status: 401, data: { message: 'No token provided.' } } }
+    await expect(http.interceptors.response.handlers[1].rejected(error)).rejects.toBe(error)
+    expect(store.dispatch).toHaveBeenCalledWith(adminLogout())
   })
 
   it('does not dispatch logout on other errors', async () => {

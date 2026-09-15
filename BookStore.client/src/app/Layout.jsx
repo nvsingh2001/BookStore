@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router'
+import { Outlet, Link } from 'react-router'
 import Header from '../components/Header'
 
 export default function Layout() {
@@ -9,7 +9,10 @@ export default function Layout() {
         <Outlet />
       </main>
       <footer className="bg-dark text-white text-center py-3">
-        Copyright &copy; 2026, BookStore. All Rights Reserved.
+        Copyright &copy; 2026, BookStore. All Rights Reserved.{' '}
+        <Link to="/admin/login" className="text-white-50 small">
+          Admin Login
+        </Link>
       </footer>
     </div>
   )
