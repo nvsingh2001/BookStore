@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { products } from '../api/products'
+import { addToCart } from '../features/cart/cartSlice'
 import Button from '../components/Button'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
@@ -14,6 +15,7 @@ import { useAsync } from '../hooks/useAsync'
 export default function BookDetail() {
   const { bookId } = useParams()
   const token = useSelector((state) => state.auth.token)
+  const dispatch = useDispatch()
   const showToast = useToast()
   const [reloadKey, setReloadKey] = useState(0)
 
@@ -25,8 +27,19 @@ export default function BookDetail() {
   if (!book)
     return <EmptyState title="Book not found" message="This book may no longer be available." />
 
-  function handleUnavailableAction() {
-    showToast('Cart functionality is coming soon.', 'warning')
+  function handleAddToBag() {
+    if (!token) {
+      showToast('Please login to add items to your cart.', 'warning')
+      return
+    }
+    dispatch(addToCart({ productId: book.id, quantity: 1 }))
+      .unwrap()
+      .then(() => showToast('Added to cart.'))
+      .catch(() => showToast('Could not add to cart.', 'danger'))
+  }
+
+  function handleNotifyMe() {
+    showToast("We'll notify you when this book is back in stock.", 'info')
   }
 
   return (
@@ -56,7 +69,7 @@ export default function BookDetail() {
               {book.inStock ? 'In Stock' : 'Out of Stock'}
             </span>
           </div>
-          <Button onClick={handleUnavailableAction}>
+          <Button onClick={book.inStock ? handleAddToBag : handleNotifyMe}>
             {book.inStock ? 'Add to Bag' : 'Notify Me'}
           </Button>
         </div>
