@@ -1,10 +1,30 @@
 # BookStore
 
-## Branch strategy
+A full-stack bookstore application: an ASP.NET Core Web API backend and a React frontend.
 
-- `main` — production branch. Stays minimal; only receives merges from `dev` when it's ready to ship.
-- `dev` — integration branch. Backend and frontend work merges here first, and `main` is only ever updated from `dev`.
-- `backend` — the ASP.NET Core solution (`BookStore`, `BookStore.BusinessLogic`, `BookStore.DataAccess`, `BookStore.DomainModel`), branched from `dev`.
-- `frontend` — the React client (`BookStore.client`), branched from `dev`.
+## Project structure
 
-Feature work branches off `backend`/`frontend` (or `dev`, for cross-cutting changes) and merges back before eventually flowing up to `main`.
+- `BookStore.Api` — the ASP.NET Core Web API host: controllers, middleware, DI wiring, Redis/RabbitMQ/SMTP infrastructure.
+- `BookStore.BusinessLogic` — services, DTOs' business rules, and the interfaces `Api` depends on.
+- `BookStore.DataAccess` — EF Core `DbContext`, repositories, and migrations.
+- `BookStore.DomainModel` — entities, DTOs, and enums shared across the other backend projects.
+- `BookStore.client` — the React frontend (Webpack + Babel), talking to the API over HTTP.
+
+## Running locally
+
+Copy `.env.example` to `.env` and fill in real values, then bring up the backend's dependencies:
+
+```
+docker compose up mssql redis rabbitmq mailpit
+```
+
+Run `BookStore.Api` from your IDE (or `dotnet run`) pointed at `localhost` for each dependency via `appsettings.Development.json`/user-secrets. Mailpit's web UI is at `localhost:8025`; RabbitMQ's management UI is at `localhost:15672`.
+
+For the frontend, from `BookStore.client`:
+
+```
+npm install
+npm run dev
+```
+
+To run the whole stack containerized instead, `docker compose up` builds and starts `BookStore.Api` itself alongside its dependencies.
