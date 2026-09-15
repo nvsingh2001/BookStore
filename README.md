@@ -10,6 +10,12 @@ A full-stack bookstore application: an ASP.NET Core Web API backend and a React 
 - `BookStore.DomainModel` — entities, DTOs, and enums shared across the other backend projects.
 - `BookStore.client` — the React frontend (Webpack + Babel), talking to the API over HTTP.
 
+## Frontend features
+
+- **Customer-facing**: browsing/search, cart, wishlist, checkout, order history, and profile, all backed by Redux Toolkit slices (`authSlice`, `cartSlice`, `wishlistSlice`) under `src/features`.
+- **Admin UI** (`src/routes/admin`, guarded by `withAdminAuth`): login, product catalog CRUD with image upload, and creating additional admin accounts.
+- Both customer and admin sessions persist their token to `localStorage` (`src/lib/persist.js`) so a page reload doesn't log the user out.
+
 ## Running locally
 
 Copy `.env.example` to `.env` and fill in real values, then bring up the backend's dependencies:
