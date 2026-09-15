@@ -8,11 +8,13 @@ export default function Layout() {
       <main className="flex-grow-1">
         <Outlet />
       </main>
-      <footer className="bg-dark text-white text-center py-3">
-        Copyright &copy; 2026, BookStore. All Rights Reserved.{' '}
-        <Link to="/admin/login" className="text-white-50 small">
-          Admin Login
-        </Link>
+      <footer className="bg-dark text-white py-3">
+        <div className="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <span>Copyright &copy; 2026, BookStore. All Rights Reserved.</span>
+          <Link to="/admin/login" className="text-white-50 small">
+            Admin Login
+          </Link>
+        </div>
       </footer>
     </div>
   )
