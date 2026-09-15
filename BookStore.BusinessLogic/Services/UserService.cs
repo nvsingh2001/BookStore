@@ -7,6 +7,7 @@ using BookStore.DomainModel.DTOs;
 using BookStore.DomainModel.Entities;
 using BookStore.BusinessLogic.Utilities;
 using BookStore.DomainModel.Enums;
+using BookStore.DomainModel.Messaging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,7 +20,7 @@ public class UserService(
     IMapper mapper,
     ITokenBlockList tokenBlockList,
     IPasswordResetTokenService passwordResetTokenService,
-    IEmailSender emailSender,
+    IEmailPublisher emailPublisher,
     IConfiguration configuration,
     IPasswordHasher passwordHasher) : IUserService
 {
@@ -56,7 +57,7 @@ public class UserService(
         {
             ["{{Link}}"] = link
         });
-        await emailSender.SendEmailAsync(result.Email, "Verify your email", body);
+        await emailPublisher.PublishAsync(new EmailRequestedMessage(result.UserId, result.Email, "Verify your email", body));
 
         return mapper.Map<UserResponseDto>(result);
     }
@@ -126,7 +127,7 @@ public class UserService(
         {
             ["{{Code}}"] = token
         });
-        await emailSender.SendEmailAsync(user.Email, "Reset your password", body);
+        await emailPublisher.PublishAsync(new EmailRequestedMessage(user.UserId, user.Email, "Reset your password", body));
     }
 
     public async Task ResetPasswordAsync(string token, string newPassword)

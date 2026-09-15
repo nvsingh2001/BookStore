@@ -20,7 +20,7 @@ public class OrderController(IOrderService orderService) : ApiControllerBase
     public async Task<ActionResult<ApiResponse<OrderResponseDto>>> CreateOrderAsync(
         [FromBody] CreateOrderRequestDto createOrderRequestDto)
     {
-        var order = await orderService.CreateOrderAsync(createOrderRequestDto, CurrentUserId);
+        var order = await orderService.CreateOrderAsync(createOrderRequestDto, CurrentUserId, CurrentUserEmail);
         return Ok(ApiResponse<OrderResponseDto>.SuccessResponse(order));
     }
 

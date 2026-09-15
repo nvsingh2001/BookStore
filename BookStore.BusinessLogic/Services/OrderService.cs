@@ -1,9 +1,13 @@
+using System.Globalization;
+using System.Text;
 using AutoMapper;
 using BookStore.BusinessLogic.Exceptions;
 using BookStore.BusinessLogic.Interfaces;
+using BookStore.BusinessLogic.Utilities;
 using BookStore.DataAccess.Interfaces;
 using BookStore.DomainModel.DTOs;
 using BookStore.DomainModel.Entities;
+using BookStore.DomainModel.Messaging;
 
 namespace BookStore.BusinessLogic.Services;
 
@@ -12,9 +16,11 @@ public class OrderService(
     IProductRepository productRepository,
     ICustomerAddressService customerAddressService,
     IUnitOfWork unitOfWork,
+    IEmailPublisher emailPublisher,
     IMapper mapper) : IOrderService
 {
-    public async Task<OrderResponseDto> CreateOrderAsync(CreateOrderRequestDto createOrderRequestDto, Guid userId)
+    public async Task<OrderResponseDto> CreateOrderAsync(CreateOrderRequestDto createOrderRequestDto, Guid userId,
+        string userEmail)
     {
         if (createOrderRequestDto.Orders is null || createOrderRequestDto.Orders.Count == 0)
             throw new ValidationException("Order must contain at least one item");
@@ -70,7 +76,33 @@ public class OrderService(
             return createdOrder;
         });
 
+        var body = BuildOrderConfirmationBody(order);
+        await emailPublisher.PublishAsync(
+            new EmailRequestedMessage(userId, userEmail, "Order confirmed", body));
+
         return mapper.Map<OrderResponseDto>(order);
+    }
+
+    private static string BuildOrderConfirmationBody(Order order)
+    {
+        var itemsHtml = new StringBuilder();
+        decimal total = 0;
+
+        foreach (var item in order.OrderItems)
+        {
+            var lineTotal = item.ProductPrice * item.ProductQuantity;
+            total += lineTotal;
+
+            itemsHtml.Append(
+                $"<div class=\"item-row\"><span>{item.ProductName} x {item.ProductQuantity}</span><span>{lineTotal.ToString("C", CultureInfo.InvariantCulture)}</span></div>");
+        }
+
+        return EmailTemplateLoader.Load("OrderConfirmationEmail.html", new Dictionary<string, string>
+        {
+            ["{{OrderId}}"] = order.OrderId.ToString(),
+            ["{{Items}}"] = itemsHtml.ToString(),
+            ["{{Total}}"] = total.ToString("C", CultureInfo.InvariantCulture)
+        });
     }
 
     public async Task<OrderResponseDto> GetOrderByIdAsync(Guid orderId, Guid userId)

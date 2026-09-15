@@ -8,6 +8,7 @@ namespace BookStore.Controllers;
 public abstract class ApiControllerBase : ControllerBase
 {
     protected Guid CurrentUserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    protected string CurrentUserEmail => User.FindFirstValue(ClaimTypes.Email)!;
     protected string? CurrentTokenJti => User.FindFirstValue(JwtRegisteredClaimNames.Jti);
 
     protected DateTimeOffset CurrentTokenExpiresAt => DateTimeOffset

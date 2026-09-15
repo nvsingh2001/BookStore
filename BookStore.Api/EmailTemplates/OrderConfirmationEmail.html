@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Order confirmed</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f5f7;
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    color: #1f2933;
+  }
+  .page {
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+  .card {
+    width: 100%;
+    max-width: 480px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: #1a7f37;
+  }
+  .header h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 20px;
+    letter-spacing: 0.5px;
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 32px 28px;
+  }
+  .body p {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 15px;
+  }
+  .order-id {
+    color: #6b7280;
+    font-size: 13px;
+  }
+  .items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    background-color: #f4f5f7;
+    border-radius: 8px;
+  }
+  .item-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 16px;
+    margin-top: 4px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .footer {
+    display: flex;
+    justify-content: center;
+    padding: 20px 28px 28px;
+  }
+  .footer p {
+    margin: 0;
+    color: #9aa4b2;
+    font-size: 12px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="header">
+        <h1>BookStore</h1>
+      </div>
+      <div class="body">
+        <p>Thanks for your order! We've received it and it's being processed.</p>
+        <p class="order-id">Order ID: {{OrderId}}</p>
+        <div class="items">
+          {{Items}}
+          <div class="total-row">
+            <span>Total</span>
+            <span>{{Total}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <p>Questions about your order? Just reply to this email.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
