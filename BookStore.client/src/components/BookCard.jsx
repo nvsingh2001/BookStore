@@ -12,7 +12,7 @@ export default function BookCard({ book }) {
           </div>
         )}
         {!book.inStock && (
-          <span className="position-absolute top-0 start-0 m-2 badge text-bg-danger">
+          <span className="position-absolute bottom-0 start-0 w-100 py-1 text-center text-uppercase small fw-bold bg-white bg-opacity-75">
             Out of Stock
           </span>
         )}

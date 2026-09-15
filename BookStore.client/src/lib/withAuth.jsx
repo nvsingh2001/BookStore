@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux'
-import { Navigate } from 'react-router'
+import PleaseLogin from '../components/PleaseLogin'
 
-export function withAuth(Components) {
+export function withAuth(Component) {
   return function AuthenticatedComponent(props) {
     const token = useSelector((state) => state.auth.token)
-    if (!token) return <Navigate to="/" replace />
-    return <Components {...props} />
+    if (!token) return <PleaseLogin />
+    return <Component {...props} />
   }
 }

@@ -8,7 +8,6 @@ import {
   removeFromWishlist,
   selectIsInWishlist,
 } from '../features/wishlist/wishlistSlice'
-import Button from '../components/Button'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import ReviewForm from '../components/ReviewForm'
@@ -64,15 +63,22 @@ export default function BookDetail() {
     <div className="container p-4">
       <div className="row g-4">
         <div className="col-md-4">
-          {book.imageUrl ? (
-            <div className="ratio ratio-1x1">
-              <img src={book.imageUrl} alt={book.name} className="object-fit-cover" />
-            </div>
-          ) : (
-            <div className="ratio ratio-1x1 bg-secondary-subtle d-flex align-items-center justify-content-center">
-              <span className="text-secondary small">No Image</span>
-            </div>
-          )}
+          <div className="position-relative">
+            {book.imageUrl ? (
+              <div className="ratio ratio-1x1">
+                <img src={book.imageUrl} alt={book.name} className="object-fit-cover" />
+              </div>
+            ) : (
+              <div className="ratio ratio-1x1 bg-secondary-subtle d-flex align-items-center justify-content-center">
+                <span className="text-secondary small">No Image</span>
+              </div>
+            )}
+            {!book.inStock && (
+              <span className="position-absolute top-0 start-0 m-2 badge text-bg-danger">
+                Out of Stock
+              </span>
+            )}
+          </div>
         </div>
         <div className="col-md-8">
           <h1 className="h3">{book.name}</h1>
@@ -83,17 +89,25 @@ export default function BookDetail() {
               <span className="text-decoration-line-through text-secondary">Rs. {book.price}</span>
             )}
             <span className="fw-bold fs-5">Rs. {book.displayPrice}</span>
-            <span className={`badge ${book.inStock ? 'text-bg-success' : 'text-bg-danger'}`}>
-              {book.inStock ? 'In Stock' : 'Out of Stock'}
-            </span>
           </div>
           <div className="d-flex gap-2">
-            <Button onClick={book.inStock ? handleAddToBag : handleNotifyMe}>
+            <button
+              type="button"
+              className="btn btn-primary text-uppercase"
+              onClick={book.inStock ? handleAddToBag : handleNotifyMe}
+            >
               {book.inStock ? 'Add to Bag' : 'Notify Me'}
-            </Button>
-            <Button variant={isWishlisted ? 'danger' : 'outline-danger'} onClick={handleToggleWishlist}>
-              {isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
-            </Button>
+            </button>
+            <button
+              type="button"
+              className="btn btn-dark text-uppercase d-flex align-items-center gap-2"
+              onClick={handleToggleWishlist}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 21s-6.7-4.35-9.33-8.2C.86 10.02 1.6 6.6 4.6 5.06 6.9 3.9 9.5 4.7 12 7.4c2.5-2.7 5.1-3.5 7.4-2.34 3 1.54 3.74 4.96 1.93 7.74C18.7 16.65 12 21 12 21Z" />
+              </svg>
+              {isWishlisted ? 'Remove from Wishlist' : 'Wishlist'}
+            </button>
           </div>
         </div>
       </div>

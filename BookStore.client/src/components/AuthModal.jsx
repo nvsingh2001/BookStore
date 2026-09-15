@@ -110,7 +110,7 @@ export default function AuthModal({ isOpen, onClose }) {
     <Modal isOpen={isOpen} onClose={onClose} className="modal-content-custom--wide">
       <div className="auth-modal-illustration">
         <img src="/assets/2766594.png" alt="" />
-        <h2 className="h5 text-white mb-0">ONLINE BOOK SHOPPING</h2>
+        <h2 className="h5 fw-bold mb-0">ONLINE BOOK SHOPPING</h2>
       </div>
       <div className="auth-modal-form">
         {mode !== 'forgot' && (
@@ -149,11 +149,17 @@ export default function AuthModal({ isOpen, onClose }) {
               onChange={(e) => updateField('password', e.target.value)}
               error={errors.password}
             />
-            <Button type="submit" disabled={status === 'loading'}>
+            <div className="text-end mb-2">
+              <button
+                type="button"
+                className="btn btn-link btn-sm text-secondary p-0"
+                onClick={() => setMode('forgot')}
+              >
+                Forgot Password?
+              </button>
+            </div>
+            <Button type="submit" className="w-100" disabled={status === 'loading'}>
               {status === 'loading' ? 'Logging in...' : 'Login'}
-            </Button>
-            <Button variant="link" type="button" onClick={() => setMode('forgot')}>
-              Forgot Password?
             </Button>
             <div className="auth-modal-divider">
               <span>OR</span>
@@ -193,7 +199,7 @@ export default function AuthModal({ isOpen, onClose }) {
               onChange={(e) => updateField('confirmPassword', e.target.value)}
               error={errors.confirmPassword}
             />
-            <Button type="submit" disabled={status === 'loading'}>
+            <Button type="submit" className="w-100" disabled={status === 'loading'}>
               {status === 'loading' ? 'Signing up...' : 'Sign Up'}
             </Button>
           </form>
