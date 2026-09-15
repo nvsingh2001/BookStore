@@ -56,7 +56,9 @@ export function persistAuthState(store) {
       prevAuthToken = state.auth.token
       safeSet(
         AUTH_KEY,
-        state.auth.token ? JSON.stringify({ token: state.auth.token, user: state.auth.user }) : null,
+        state.auth.token
+          ? JSON.stringify({ token: state.auth.token, user: state.auth.user })
+          : null,
       )
     }
 

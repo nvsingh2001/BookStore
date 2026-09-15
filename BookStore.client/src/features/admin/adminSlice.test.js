@@ -30,7 +30,12 @@ describe('adminSlice reducer', () => {
   })
 
   it('clears admin and token on logout', () => {
-    const loggedIn = { admin: { fullName: 'Bootstrap Admin' }, token: 'abc', status: 'success', error: null }
+    const loggedIn = {
+      admin: { fullName: 'Bootstrap Admin' },
+      token: 'abc',
+      status: 'success',
+      error: null,
+    }
     const state = adminReducer(loggedIn, logout())
     expect(state.admin).toBeNull()
     expect(state.token).toBeNull()

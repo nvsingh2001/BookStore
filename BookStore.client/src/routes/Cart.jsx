@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router'
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router'
+import { useIsMutating } from '@tanstack/react-query'
 import {
-  fetchCart,
-  updateCartItemQuantity,
-  removeFromCart,
-  selectCartItems,
-  selectCartStatus,
-  selectCartTotal,
-} from '../features/cart/cartSlice'
+  useCart,
+  useUpdateCartItemQuantity,
+  useRemoveFromCart,
+  cartTotal,
+} from '../features/cart/useCart'
 import CartLineItem from '../components/CartLineItem'
 import DeliveryLocationSelect from '../components/DeliveryLocationSelect'
 import Spinner from '../components/Spinner'
@@ -17,33 +15,30 @@ import EmptyState from '../components/EmptyState'
 import { useToast } from '../context/ToastContext'
 
 export default function Cart() {
-  const dispatch = useDispatch()
   const navigate = useNavigate()
   const showToast = useToast()
-  const items = useSelector(selectCartItems)
-  const status = useSelector(selectCartStatus)
-  const total = useSelector(selectCartTotal)
+  const { data: items = [], isLoading, isError, refetch } = useCart()
+  const updateQuantity = useUpdateCartItemQuantity()
+  const removeItem = useRemoveFromCart()
+  const isMutating = useIsMutating({ mutationKey: ['cart'] }) > 0
   const [deliveryLocation, setDeliveryLocation] = useState('Home')
 
-  useEffect(() => {
-    dispatch(fetchCart())
-  }, [dispatch])
-
   function handleQuantityChange(cartItemId, quantity) {
-    dispatch(updateCartItemQuantity({ cartItemId, quantity }))
-      .unwrap()
-      .catch(() => showToast('Could not update quantity.', 'danger'))
+    updateQuantity.mutate(
+      { cartItemId, quantity },
+      { onError: () => showToast('Could not update quantity.', 'danger') },
+    )
   }
 
   function handleRemove(cartItemId) {
-    dispatch(removeFromCart(cartItemId))
-      .unwrap()
-      .catch(() => showToast('Could not remove item.', 'danger'))
+    removeItem.mutate(cartItemId, {
+      onError: () => showToast('Could not remove item.', 'danger'),
+    })
   }
 
-  if (status === 'loading' && items.length === 0) return <Spinner />
-  if (status === 'error' && items.length === 0) {
-    return <ErrorState message="Could not load your cart." onRetry={() => dispatch(fetchCart())} />
+  if (isLoading) return <Spinner />
+  if (isError) {
+    return <ErrorState message="Could not load your cart." onRetry={refetch} />
   }
   if (items.length === 0) {
     return (
@@ -67,7 +62,7 @@ export default function Cart() {
               item={item}
               onQuantityChange={handleQuantityChange}
               onRemove={handleRemove}
-              disabled={status === 'loading'}
+              disabled={isMutating}
             />
           ))}
         </div>
@@ -76,7 +71,7 @@ export default function Cart() {
             <DeliveryLocationSelect value={deliveryLocation} onChange={setDeliveryLocation} />
             <div className="d-flex justify-content-between mb-3">
               <span>Subtotal</span>
-              <span className="fw-bold">Rs. {total.toFixed(2)}</span>
+              <span className="fw-bold">Rs. {cartTotal(items).toFixed(2)}</span>
             </div>
             <Link to="/checkout" className="btn btn-primary w-100">
               Proceed to Checkout

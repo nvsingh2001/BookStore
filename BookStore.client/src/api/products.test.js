@@ -14,7 +14,13 @@ describe('mapBook', () => {
   })
 
   it('defaults discount to 0 when discountPrice is missing', () => {
-    const book = mapBook({ productId: '1', bookName: 'Foo', author: 'Bar', quantity: 5, price: 1000 })
+    const book = mapBook({
+      productId: '1',
+      bookName: 'Foo',
+      author: 'Bar',
+      quantity: 5,
+      price: 1000,
+    })
     expect(book.discount).toBe(0)
     expect(book.displayPrice).toBe(1000)
   })

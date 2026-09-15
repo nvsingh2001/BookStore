@@ -18,7 +18,9 @@ export default function AddressForm({
   submitLabel = 'Save Address & Continue',
 }) {
   const [fields, setFields] = useState(() => ({
-    addressType: initialValues?.addressType ? addressTypeToLabel(initialValues.addressType) : 'Home',
+    addressType: initialValues?.addressType
+      ? addressTypeToLabel(initialValues.addressType)
+      : 'Home',
     fullAddress: initialValues?.fullAddress ?? '',
     city: initialValues?.city ?? '',
     state: initialValues?.state ?? '',

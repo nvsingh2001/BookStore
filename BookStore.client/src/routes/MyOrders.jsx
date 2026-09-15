@@ -1,17 +1,17 @@
-import { useCallback } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { orders } from '../api/orders'
-import { useAsync } from '../hooks/useAsync'
 import Spinner from '../components/Spinner'
 import ErrorState from '../components/ErrorState'
 import EmptyState from '../components/EmptyState'
 
 export default function MyOrders() {
-  const fetchOrders = useCallback(() => orders.list(), [])
-  const { status, data, retry } = useAsync(fetchOrders)
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['orders'],
+    queryFn: orders.list,
+  })
 
-  if (status === 'loading') return <Spinner />
-  if (status === 'error')
-    return <ErrorState message="Could not load your orders." onRetry={retry} />
+  if (isLoading) return <Spinner />
+  if (isError) return <ErrorState message="Could not load your orders." onRetry={refetch} />
   if (!data || data.length === 0) {
     return <EmptyState title="No orders yet" message="Your placed orders will show up here." />
   }

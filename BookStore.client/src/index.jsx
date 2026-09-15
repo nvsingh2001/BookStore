@@ -6,16 +6,20 @@ import '@fontsource/lato/700.css'
 import './styles/index.scss'
 import App from './App'
 import { Provider } from 'react-redux'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { store } from './app/store'
+import { queryClient } from './app/queryClient'
 import { ToastProvider } from './context/ToastContext'
 import { AuthModalProvider } from './context/AuthModalContext'
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <ToastProvider>
-      <AuthModalProvider>
-        <App />
-      </AuthModalProvider>
-    </ToastProvider>
+    <QueryClientProvider client={queryClient}>
+      <ToastProvider>
+        <AuthModalProvider>
+          <App />
+        </AuthModalProvider>
+      </ToastProvider>
+    </QueryClientProvider>
   </Provider>,
 )

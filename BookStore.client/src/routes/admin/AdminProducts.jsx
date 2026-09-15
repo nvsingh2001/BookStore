@@ -1,7 +1,7 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { products } from '../../api/products'
-import { useAsync } from '../../hooks/useAsync'
 import { useToast } from '../../context/ToastContext'
 import Spinner from '../../components/Spinner'
 import ErrorState from '../../components/ErrorState'
@@ -9,15 +9,14 @@ import EmptyState from '../../components/EmptyState'
 
 export default function AdminProducts() {
   const showToast = useToast()
-  const [reloadKey, setReloadKey] = useState(0)
+  const queryClient = useQueryClient()
   const [confirmingId, setConfirmingId] = useState(null)
   const [deleting, setDeleting] = useState(false)
 
-  const fetchProducts = useCallback(() => {
-    void reloadKey
-    return products.list()
-  }, [reloadKey])
-  const { status, data, retry } = useAsync(fetchProducts)
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['products'],
+    queryFn: products.list,
+  })
 
   async function handleDelete(id) {
     setDeleting(true)
@@ -25,7 +24,7 @@ export default function AdminProducts() {
       await products.remove(id)
       showToast('Book deleted.')
       setConfirmingId(null)
-      setReloadKey((k) => k + 1)
+      await queryClient.invalidateQueries({ queryKey: ['products'] })
     } catch {
       showToast('Could not delete book.', 'danger')
     } finally {
@@ -33,8 +32,8 @@ export default function AdminProducts() {
     }
   }
 
-  if (status === 'loading') return <Spinner />
-  if (status === 'error') return <ErrorState message="Could not load products." onRetry={retry} />
+  if (isLoading) return <Spinner />
+  if (isError) return <ErrorState message="Could not load products." onRetry={refetch} />
 
   return (
     <div className="container py-4">

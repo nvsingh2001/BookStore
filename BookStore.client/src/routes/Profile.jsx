@@ -1,7 +1,7 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { auth } from '../api/auth'
 import { customerDetails } from '../api/customerDetails'
-import { useAsync } from '../hooks/useAsync'
 import { useToast } from '../context/ToastContext'
 import AddressForm, { addressTypeToLabel } from '../components/AddressForm'
 import Spinner from '../components/Spinner'
@@ -9,15 +9,18 @@ import ErrorState from '../components/ErrorState'
 
 export default function Profile() {
   const showToast = useToast()
-  const fetchMe = useCallback(() => auth.me(), [])
-  const { status, data: user, retry } = useAsync(fetchMe)
+  const {
+    data: user,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({ queryKey: ['me'], queryFn: auth.me })
   const [savedAddress, setSavedAddress] = useState(null)
   const [isEditingAddress, setIsEditingAddress] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
-  if (status === 'loading') return <Spinner />
-  if (status === 'error')
-    return <ErrorState message="Could not load your profile." onRetry={retry} />
+  if (isLoading) return <Spinner />
+  if (isError) return <ErrorState message="Could not load your profile." onRetry={refetch} />
 
   async function handleAddressSubmit(fields) {
     setSubmitting(true)

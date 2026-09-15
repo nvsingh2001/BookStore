@@ -1,24 +1,20 @@
 import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
+import { useQueryClient } from '@tanstack/react-query'
 import { customerDetails } from '../api/customerDetails'
 import { orders } from '../api/orders'
-import {
-  fetchCart,
-  removeFromCart,
-  selectCartItems,
-  selectCartTotal,
-} from '../features/cart/cartSlice'
+import { cart as cartApi } from '../api/cart'
+import { useCart, cartTotal } from '../features/cart/useCart'
 import AddressForm from '../components/AddressForm'
 import EmptyState from '../components/EmptyState'
 import { useToast } from '../context/ToastContext'
 
 export default function Checkout() {
-  const dispatch = useDispatch()
   const navigate = useNavigate()
   const showToast = useToast()
-  const items = useSelector(selectCartItems)
-  const total = useSelector(selectCartTotal)
+  const queryClient = useQueryClient()
+  const { data: items = [] } = useCart()
+  const total = cartTotal(items)
   const [step, setStep] = useState('address')
   const [address, setAddress] = useState(null)
   const [submitting, setSubmitting] = useState(false)
@@ -54,8 +50,8 @@ export default function Checkout() {
         items.map((item) => ({ id: item.book.id, quantity: item.quantity })),
         address.addressId,
       )
-      await Promise.all(items.map((item) => dispatch(removeFromCart(item.cartItemId)).unwrap()))
-      await dispatch(fetchCart())
+      await Promise.all(items.map((item) => cartApi.remove(item.cartItemId)))
+      await queryClient.invalidateQueries({ queryKey: ['cart'] })
       navigate('/checkout/confirmation', { state: { order } })
     } catch {
       showToast('Could not place your order.', 'danger')

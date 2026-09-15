@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
-import { useAsync } from '../hooks/useAsync'
+import { useQuery } from '@tanstack/react-query'
 import Spinner from '../components/Spinner'
 import ErrorState from '../components/ErrorState'
 import EmptyState from '../components/EmptyState'
@@ -12,8 +12,10 @@ export default function Home() {
   const [searchParams] = useSearchParams()
   const query = searchParams.get('q') ?? ''
   const [sort, setSort] = useState('default')
-  const fetchBooks = useCallback(() => products.list(), [])
-  const { status, data, retry } = useAsync(fetchBooks)
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['products'],
+    queryFn: products.list,
+  })
 
   const visibleBooks = useMemo(() => {
     if (!data) return []
@@ -32,8 +34,8 @@ export default function Home() {
     return sorted
   }, [data, query, sort])
 
-  if (status == 'loading') return <Spinner />
-  if (status == 'error') return <ErrorState message="Could not load books." onRetry={retry} />
+  if (isLoading) return <Spinner />
+  if (isError) return <ErrorState message="Could not load books." onRetry={refetch} />
   if (visibleBooks.length === 0) {
     return <EmptyState title={'No books found'} message={'Try a different search term.'} />
   }

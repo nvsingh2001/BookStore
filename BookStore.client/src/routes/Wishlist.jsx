@@ -1,13 +1,7 @@
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
-import {
-  fetchWishlist,
-  removeFromWishlist,
-  selectWishlistItems,
-  selectWishlistStatus,
-} from '../features/wishlist/wishlistSlice'
-import { addToCart } from '../features/cart/cartSlice'
+import { useIsMutating } from '@tanstack/react-query'
+import { useWishlist, useRemoveFromWishlist } from '../features/wishlist/useWishlist'
+import { useAddToCart } from '../features/cart/useCart'
 import WishlistCard from '../components/WishlistCard'
 import Spinner from '../components/Spinner'
 import ErrorState from '../components/ErrorState'
@@ -15,40 +9,34 @@ import EmptyState from '../components/EmptyState'
 import { useToast } from '../context/ToastContext'
 
 export default function Wishlist() {
-  const dispatch = useDispatch()
   const navigate = useNavigate()
   const showToast = useToast()
-  const items = useSelector(selectWishlistItems)
-  const status = useSelector(selectWishlistStatus)
-
-  useEffect(() => {
-    dispatch(fetchWishlist())
-  }, [dispatch])
+  const { data: items = [], isLoading, isError, refetch } = useWishlist()
+  const removeFromWishlist = useRemoveFromWishlist()
+  const addToCart = useAddToCart()
+  const wishlistMutating = useIsMutating({ mutationKey: ['wishlist'] })
+  const cartMutating = useIsMutating({ mutationKey: ['cart'] })
+  const isMutating = wishlistMutating > 0 || cartMutating > 0
 
   function handleRemove(productId) {
-    dispatch(removeFromWishlist(productId))
-      .unwrap()
-      .catch(() => showToast('Could not remove item.', 'danger'))
+    removeFromWishlist.mutate(productId, {
+      onError: () => showToast('Could not remove item.', 'danger'),
+    })
   }
 
-  function handleMoveToCart(productId) {
-    dispatch(addToCart({ productId, quantity: 1 }))
-      .unwrap()
-      .then(() => {
-        showToast('Moved to cart.')
-        return dispatch(removeFromWishlist(productId)).unwrap()
-      })
-      .catch(() => showToast('Could not move item to cart.', 'danger'))
+  async function handleMoveToCart(productId) {
+    try {
+      await addToCart.mutateAsync({ productId, quantity: 1 })
+      showToast('Moved to cart.')
+      await removeFromWishlist.mutateAsync(productId)
+    } catch {
+      showToast('Could not move item to cart.', 'danger')
+    }
   }
 
-  if (status === 'loading' && items.length === 0) return <Spinner />
-  if (status === 'error' && items.length === 0) {
-    return (
-      <ErrorState
-        message="Could not load your wishlist."
-        onRetry={() => dispatch(fetchWishlist())}
-      />
-    )
+  if (isLoading) return <Spinner />
+  if (isError) {
+    return <ErrorState message="Could not load your wishlist." onRetry={refetch} />
   }
   if (items.length === 0) {
     return (
@@ -74,7 +62,7 @@ export default function Wishlist() {
               item={item}
               onRemove={handleRemove}
               onMoveToCart={handleMoveToCart}
-              disabled={status === 'loading'}
+              disabled={isMutating}
             />
           ))}
         </div>

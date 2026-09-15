@@ -1,8 +1,7 @@
-import { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useRef } from 'react'
+import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router'
-import { fetchCart, selectCartCount } from '../features/cart/cartSlice'
-import { fetchWishlist } from '../features/wishlist/wishlistSlice'
+import { useCart, cartCount } from '../features/cart/useCart'
 import { useAuthModal } from '../context/AuthModalContext'
 import ProfileMenu from './ProfileMenu'
 
@@ -15,18 +14,11 @@ const profileIcon = (
 export default function Header() {
   const searchRef = useRef(null)
   const navigate = useNavigate()
-  const dispatch = useDispatch()
   const user = useSelector((state) => state.auth.user)
   const token = useSelector((state) => state.auth.token)
-  const cartCount = useSelector(selectCartCount)
+  const { data: cartItems = [] } = useCart()
+  const count = cartCount(cartItems)
   const openAuthModal = useAuthModal()
-
-  useEffect(() => {
-    if (token) {
-      dispatch(fetchCart())
-      dispatch(fetchWishlist())
-    }
-  }, [token, dispatch])
 
   function handleSearchSubmit(e) {
     e.preventDefault()
@@ -41,8 +33,17 @@ export default function Header() {
           <img src="/assets/education.svg" alt="Logo" className="d-inline-block align-text-top" />
           BookStore
         </Link>
-        <form onSubmit={handleSearchSubmit} className="d-flex flex-grow-1 mx-4" style={{ maxWidth: '640px' }}>
-          <input ref={searchRef} type="search" className="form-control w-100" placeholder="Search..." />
+        <form
+          onSubmit={handleSearchSubmit}
+          className="d-flex flex-grow-1 mx-4"
+          style={{ maxWidth: '640px' }}
+        >
+          <input
+            ref={searchRef}
+            type="search"
+            className="form-control w-100"
+            placeholder="Search..."
+          />
         </form>
         <div className="d-flex align-items-center gap-3">
           {token ? (
@@ -64,9 +65,9 @@ export default function Header() {
             title="Cart"
           >
             <img src="/assets/supermarket.svg" alt="" width="22" height="22" />
-            {cartCount > 0 && (
+            {count > 0 && (
               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger">
-                {cartCount}
+                {count}
               </span>
             )}
             <span className="small">Cart</span>

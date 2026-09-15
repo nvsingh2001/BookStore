@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
+import { useQueryClient } from '@tanstack/react-query'
 import { products } from '../../api/products'
 import { useToast } from '../../context/ToastContext'
 import Button from '../../components/Button'
@@ -19,6 +20,7 @@ export default function AdminProductForm() {
   const isEdit = Boolean(productId)
   const navigate = useNavigate()
   const showToast = useToast()
+  const queryClient = useQueryClient()
   const [fields, setFields] = useState(emptyFields)
   const [imageFile, setImageFile] = useState(null)
   const [loading, setLoading] = useState(isEdit)
@@ -51,7 +53,8 @@ export default function AdminProductForm() {
 
   function validate() {
     const next = {}
-    if (fields.bookName.trim().length < 2) next.bookName = 'Book name must be at least 2 characters.'
+    if (fields.bookName.trim().length < 2)
+      next.bookName = 'Book name must be at least 2 characters.'
     if (fields.author.trim().length < 2) next.author = 'Author must be at least 2 characters.'
     if (fields.description.trim().length < 2)
       next.description = 'Description must be at least 2 characters.'
@@ -74,11 +77,14 @@ export default function AdminProductForm() {
       discountPrice: Number(fields.discountPrice) || 0,
     }
     try {
-      const book = isEdit ? await products.update(productId, payload) : await products.create(payload)
+      const book = isEdit
+        ? await products.update(productId, payload)
+        : await products.create(payload)
       if (imageFile) {
         await products.uploadImage(book.id, imageFile)
       }
       showToast(isEdit ? 'Book updated.' : 'Book created.')
+      await queryClient.invalidateQueries({ queryKey: ['products'] })
       navigate('/admin/products')
     } catch (err) {
       showToast(err.message ?? 'Could not save book.', 'danger')
