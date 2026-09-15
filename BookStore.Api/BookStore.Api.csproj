@@ -31,6 +31,8 @@
     <ItemGroup>
         <None Update="nlog.config" CopyToOutputDirectory="PreserveNewest"/>
         <None Update="EmailTemplates\*.html" CopyToOutputDirectory="PreserveNewest"/>
+        <None Update="jwt-private.pem" CopyToOutputDirectory="PreserveNewest"/>
+        <None Update="jwt-public.pem" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
     <ItemGroup>

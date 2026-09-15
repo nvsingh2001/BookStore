@@ -23,4 +23,7 @@ RUN dotnet publish "./BookStore.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publ
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+USER root
+RUN mkdir -p /app/wwwroot/images/products && chown -R $APP_UID /app/wwwroot
+USER $APP_UID
 ENTRYPOINT ["dotnet", "BookStore.Api.dll"]
