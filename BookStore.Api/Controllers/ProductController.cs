@@ -67,4 +67,20 @@ public class ProductController(IProductService productService) : ApiControllerBa
         await productService.DeleteProductAsync(productId);
         return Ok(ApiResponse<object>.SuccessResponse(null!, "Product deleted successfully"));
     }
+
+
+    [HttpPost("{productId:guid}/image")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<ProductResponseDto>>> UploadProductImageAsync(Guid productId,
+        IFormFile file)
+    {
+        var product = await productService.UploadProductImageAsync(productId, file.OpenReadStream(),
+            file.ContentType, file.Length);
+        return Ok(ApiResponse<ProductResponseDto>.SuccessResponse(product));
+    }
 }

@@ -1,16 +1,25 @@
 using AutoMapper;
 using BookStore.BusinessLogic.Exceptions;
 using BookStore.BusinessLogic.Interfaces;
+using BookStore.BusinessLogic.Utilities;
 using BookStore.DataAccess.Exceptions;
 using BookStore.DataAccess.Interfaces;
 using BookStore.DomainModel.DTOs;
 using BookStore.DomainModel.Entities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace BookStore.BusinessLogic.Services;
 
-public class ProductService(IProductRepository productRepository, IProductCache productCache, IMapper mapper)
-    : IProductService
+public class ProductService(
+    IProductRepository productRepository,
+    IProductCache productCache,
+    IMapper mapper,
+    IConfiguration configuration,
+    ILogger<ProductService> logger) : IProductService
 {
+    private const long MaxImageSizeBytes = 5 * 1024 * 1024;
+
     public async Task<ProductResponseDto> CreateProductAsync(ProductRequestDto productRequestDto, Guid adminId)
     {
         var newProduct = new Product
@@ -101,7 +110,42 @@ public class ProductService(IProductRepository productRepository, IProductCache 
             throw new ConflictException("Product cannot be deleted", ex);
         }
 
+        try
+        {
+            ProductImageStorage.DeleteImage(productId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to delete image for product {ProductId}", productId);
+        }
+
         await productCache.InvalidateProductCacheAsync(productId);
         await productCache.InvalidateAllProductsCacheAsync();
+    }
+
+    public async Task<ProductResponseDto> UploadProductImageAsync(Guid productId, Stream imageStream,
+        string contentType, long contentLength)
+    {
+        var product = await productRepository.GetProductByIdAsync(productId);
+
+        if (product is null)
+            throw new NotFoundException("Product not found");
+
+        if (!ProductImageStorage.ExtensionsByContentType.ContainsKey(contentType))
+            throw new ValidationException("Image must be JPEG, PNG, or WebP");
+
+        if (contentLength > MaxImageSizeBytes)
+            throw new ValidationException("Image must be 5MB or smaller");
+
+        var baseUrl = configuration["AppSettings:BaseUrl"];
+        product.ImageUrl = await ProductImageStorage.SaveImageAsync(productId, imageStream, contentType, baseUrl!);
+        product.LastModifiedDate = DateTime.UtcNow;
+
+        var result = await productRepository.UpdateProductAsync(product);
+
+        await productCache.InvalidateProductCacheAsync(productId);
+        await productCache.InvalidateAllProductsCacheAsync();
+
+        return mapper.Map<ProductResponseDto>(result);
     }
 }

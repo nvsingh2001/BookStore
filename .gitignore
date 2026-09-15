@@ -18,5 +18,7 @@ dist/
 BookStore.Api/jwt-private.pem
 BookStore.Api/jwt-public.pem
 
+BookStore.Api/wwwroot/images/
+
 Swagger UI.pdf
 

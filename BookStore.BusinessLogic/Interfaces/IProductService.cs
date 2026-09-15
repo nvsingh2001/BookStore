@@ -9,4 +9,6 @@ public interface IProductService
     Task<List<ProductResponseDto>> GetAllProductsAsync();
     Task<ProductResponseDto> UpdateProductAsync(Guid productId, ProductRequestDto productRequestDto);
     Task DeleteProductAsync(Guid productId);
+    Task<ProductResponseDto> UploadProductImageAsync(Guid productId, Stream imageStream, string contentType,
+        long contentLength);
 }

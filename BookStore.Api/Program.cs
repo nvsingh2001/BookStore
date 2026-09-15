@@ -14,6 +14,7 @@ using BookStore.Infrastructure.Email;
 using BookStore.Infrastructure.Messaging;
 using BookStore.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -28,6 +29,8 @@ logger.Debug("Initializing application");
 
 try
 {
+    Directory.CreateDirectory(Path.Combine("wwwroot", "images", "products"));
+
     var builder = WebApplication.CreateBuilder(args);
 
     builder.Logging.ClearProviders();
@@ -140,6 +143,8 @@ try
 
     builder.Services.AddAuthorization();
 
+    builder.Services.Configure<FormOptions>(options => options.MultipartBodyLengthLimit = 5 * 1024 * 1024);
+
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -155,6 +160,8 @@ try
     }
 
     app.UseHttpsRedirection();
+
+    app.UseStaticFiles();
 
     app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
