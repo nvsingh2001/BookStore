@@ -11,6 +11,7 @@ using BookStore.DataAccess.Repositories;
 using BookStore.DomainModel.Utilities;
 using BookStore.Infrastructure.Caching;
 using BookStore.Infrastructure.Email;
+using BookStore.Infrastructure.Messaging;
 using BookStore.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using NLog;
 using NLog.Web;
+using RabbitMQ.Client;
 using StackExchange.Redis;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -95,6 +97,16 @@ try
     builder.Services.AddSingleton<ITokenBlockList, RedisTokenBlocklist>();
     builder.Services.AddSingleton<IProductCache, RedisProductCache>();
     builder.Services.AddSingleton<IEmailSender, MailKitEmailSender>();
+
+    var rabbitFactory = new ConnectionFactory
+    {
+        HostName = builder.Configuration["RabbitMQ:Host"],
+        UserName = builder.Configuration["RabbitMQ:Username"],
+        Password = builder.Configuration["RabbitMQ:Password"]
+    };
+    builder.Services.AddSingleton<IConnection>(await rabbitFactory.CreateConnectionAsync());
+    builder.Services.AddSingleton<IEmailPublisher, RabbitMqEmailPublisher>();
+    builder.Services.AddHostedService<EmailConsumerService>();
 
     var rsa = RSA.Create();
     rsa.ImportFromPem(File.ReadAllText(builder.Configuration["JwtSettings:PublicKey"] ?? ""));

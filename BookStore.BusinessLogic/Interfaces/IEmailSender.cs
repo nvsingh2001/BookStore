@@ -2,5 +2,5 @@ namespace BookStore.BusinessLogic.Interfaces;
 
 public interface IEmailSender
 {
-    Task SendEmailAsync(string to, string subject, string htmlBody);
+    Task<bool> SendEmailAsync(string to, string subject, string htmlBody);
 }

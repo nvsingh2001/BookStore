@@ -6,7 +6,7 @@ namespace BookStore.Infrastructure.Email;
 
 public class MailKitEmailSender(IConfiguration configuration, ILogger<MailKitEmailSender> logger) : IEmailSender
 {
-    public async Task SendEmailAsync(string to, string subject, string htmlBody)
+    public async Task<bool> SendEmailAsync(string to, string subject, string htmlBody)
     {
         try
         {
@@ -25,10 +25,13 @@ public class MailKitEmailSender(IConfiguration configuration, ILogger<MailKitEma
 
             await smtpClient.SendAsync(message);
             await smtpClient.DisconnectAsync(true);
+
+            return true;
         }
         catch (Exception e)
         {
             logger.LogWarning(e, "Error sending email");
+            return false;
         }
     }
 }
