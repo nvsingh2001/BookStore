@@ -40,7 +40,7 @@ export default function ReviewForm({ productId, onSubmitted }) {
         placeholder="Write a review..."
         required
       />
-      <Button type="submit" disabled={submitting}>
+      <Button variant="confirm" type="submit" disabled={submitting}>
         {submitting ? 'submitting...' : 'Submit Review'}
       </Button>
     </form>

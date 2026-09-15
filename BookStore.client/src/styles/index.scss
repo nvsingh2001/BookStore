@@ -99,13 +99,24 @@ $headings-font-weight: 700;
   }
 }
 
-.btn-facebook {
+.btn.btn-facebook {
   background: #1877f2;
   color: #fff;
   border: none;
 
   &:hover {
     background: #1461c7;
+    color: #fff;
+  }
+}
+
+.btn.btn-confirm {
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+
+  &:hover {
+    background: #1558b0;
     color: #fff;
   }
 }

@@ -9,6 +9,7 @@ import {
   validatePhone,
 } from '../lib/validation'
 import { login, register } from '../features/auth/authSlice'
+import { auth } from '../api/auth'
 import Modal from './Modal'
 import Button from './Button'
 
@@ -35,6 +36,69 @@ function PasswordField({ placeholder, value, onChange, error }) {
         </button>
       </div>
       {error && <div className="text-danger small">{error}</div>}
+    </div>
+  )
+}
+
+function ForgotPasswordForm({ onBack }) {
+  const [email, setEmail] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [sent, setSent] = useState(false)
+  const showToast = useToast()
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setSubmitting(true)
+    try {
+      await auth.requestPasswordReset(email)
+      setSent(true)
+    } catch {
+      showToast('Could not send reset link. Please try again.', 'danger')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  if (sent) {
+    return (
+      <div>
+        <p>Check your email for a link to reset your password.</p>
+        <Button variant="link" type="button" onClick={onBack}>
+          Back to login
+        </Button>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <h2 className="h5 fw-bold mb-3">Forgot Your Password?</h2>
+      <form onSubmit={handleSubmit}>
+        <p className="text-secondary small">
+          Enter your email address and we&apos;ll send you a link to reset your password.
+        </p>
+        <div className="mb-3">
+          <label htmlFor="forgot-email" className="form-label">
+            Email Id
+          </label>
+          <input
+            id="forgot-email"
+            type="email"
+            className="form-control"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <Button type="submit" className="w-100" disabled={submitting}>
+          {submitting ? 'Sending...' : 'Reset Password'}
+        </Button>
+      </form>
+      <div className="text-center mt-3">
+        <Button variant="link" type="button" onClick={onBack}>
+          Back to login
+        </Button>
+      </div>
     </div>
   )
 }
@@ -205,14 +269,7 @@ export default function AuthModal({ isOpen, onClose }) {
           </form>
         )}
 
-        {mode === 'forgot' && (
-          <div>
-            <p>Password recovery isn&apos;t available yet — this is a placeholder for now.</p>
-            <Button variant="link" type="button" onClick={() => setMode('login')}>
-              Back to login
-            </Button>
-          </div>
-        )}
+        {mode === 'forgot' && <ForgotPasswordForm onBack={() => setMode('login')} />}
       </div>
     </Modal>
   )

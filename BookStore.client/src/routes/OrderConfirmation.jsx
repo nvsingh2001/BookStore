@@ -8,11 +8,14 @@ export default function OrderConfirmation() {
 
   return (
     <div className="container py-5 text-center" style={{ maxWidth: '480px' }}>
-      <h1 className="h3 mb-3">Order Placed!</h1>
-      <p className="text-secondary">Your order has been placed successfully.</p>
-      <p className="fw-bold mb-1">Order ID: {order.orderId}</p>
+      <h1 className="h3 fw-bold mb-3">Order Placed Successfully</h1>
+      <p className="text-secondary">
+        hurray!!! your order is confirmed
+        <br />
+        the order id is #{order.orderId} save the order id for further communication..
+      </p>
       <p className="text-secondary">Status: {order.status}</p>
-      <Link to="/" className="btn btn-primary mt-3">
+      <Link to="/" className="btn btn-confirm mt-3">
         Continue Shopping
       </Link>
     </div>

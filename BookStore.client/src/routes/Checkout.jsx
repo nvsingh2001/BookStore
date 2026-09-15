@@ -95,7 +95,7 @@ export default function Checkout() {
           </div>
           <button
             type="button"
-            className="btn btn-primary w-100 mt-3"
+            className="btn btn-confirm w-100 mt-3"
             disabled={submitting}
             onClick={handlePlaceOrder}
           >

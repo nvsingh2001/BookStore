@@ -62,19 +62,22 @@ export default function Wishlist() {
   }
 
   return (
-    <div className="container py-4">
-      <h1 className="h3 mb-4">Your Wishlist</h1>
-      <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-        {items.map((item) => (
-          <div className="col" key={item.wishlistItemId}>
+    <div className="container py-4" style={{ maxWidth: '720px' }}>
+      <div className="border rounded">
+        <h1 className="h6 fw-bold bg-light m-0 p-3">
+          My Wishlist ({String(items.length).padStart(2, '0')})
+        </h1>
+        <div className="px-3">
+          {items.map((item) => (
             <WishlistCard
+              key={item.wishlistItemId}
               item={item}
               onRemove={handleRemove}
               onMoveToCart={handleMoveToCart}
               disabled={status === 'loading'}
             />
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   )
