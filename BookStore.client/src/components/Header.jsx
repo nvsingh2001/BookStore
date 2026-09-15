@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router'
 import { fetchCart, selectCartCount } from '../features/cart/cartSlice'
 import { fetchWishlist } from '../features/wishlist/wishlistSlice'
 import { useAuthModal } from '../context/AuthModalContext'
+import ProfileMenu from './ProfileMenu'
 
 const profileIcon = (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -45,14 +46,7 @@ export default function Header() {
         </form>
         <div className="d-flex align-items-center gap-3">
           {token ? (
-            <Link
-              to="/profile"
-              className="text-white text-decoration-none d-flex flex-column align-items-center"
-              title="Profile"
-            >
-              {profileIcon}
-              <span className="small">{user?.fullName?.split(' ')[0] ?? 'Profile'}</span>
-            </Link>
+            <ProfileMenu firstName={user?.fullName?.split(' ')[0] ?? 'Profile'} />
           ) : (
             <button
               type="button"

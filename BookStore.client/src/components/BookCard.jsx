@@ -1,6 +1,6 @@
 export default function BookCard({ book }) {
   return (
-    <div className="card h-100">
+    <div className="card h-100 book-card">
       <div className="position-relative">
         {book.imageUrl ? (
           <div className="ratio ratio-1x1">
