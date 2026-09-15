@@ -32,25 +32,33 @@ $headings-font-weight: 700;
 }
 
 .modal-content-custom--wide {
-  max-width: 720px;
+  max-width: 760px;
   padding: 0;
+  background: transparent;
+  box-shadow: none;
   display: flex;
-  overflow: hidden;
+  align-items: center;
+  overflow: visible;
 }
 
 .auth-modal-illustration {
   display: none;
-  flex: 0 0 45%;
-  background: #f0f0f0;
+  flex: 0 0 46%;
+  background: #f5f5f5;
   color: $body-color;
   padding: 2rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
+  border-radius: 1rem;
+  box-shadow: 0 0.75rem 1.75rem rgba(0, 0, 0, 0.18);
+  position: relative;
+  z-index: 1;
+  margin-right: -2rem;
 
   img {
-    max-width: 100%;
+    max-width: 80%;
     margin-bottom: 1rem;
   }
 
@@ -61,8 +69,18 @@ $headings-font-weight: 700;
 
 .auth-modal-form {
   flex: 1 1 auto;
-  padding: 1.5rem;
   min-width: 0;
+  background: $body-bg;
+  border-radius: 1rem;
+  box-shadow: 0 0.75rem 1.75rem rgba(0, 0, 0, 0.18);
+  padding: 1.75rem;
+  position: relative;
+  z-index: 2;
+  margin-block: -0.75rem;
+
+  @media (max-width: 575.98px) {
+    margin-block: 0;
+  }
 }
 
 .auth-modal-tab {
@@ -104,9 +122,16 @@ $headings-font-weight: 700;
   color: #fff;
   border: none;
 
+  &:hover,
+  &:disabled {
+    background: #1877f2;
+    color: #fff;
+    opacity: 0.65;
+  }
+
   &:hover {
     background: #1461c7;
-    color: #fff;
+    opacity: 1;
   }
 }
 
@@ -115,9 +140,16 @@ $headings-font-weight: 700;
   color: #fff;
   border: none;
 
+  &:hover,
+  &:disabled {
+    background: #1a73e8;
+    color: #fff;
+    opacity: 0.65;
+  }
+
   &:hover {
     background: #1558b0;
-    color: #fff;
+    opacity: 1;
   }
 }
 
