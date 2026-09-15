@@ -3,6 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { products } from '../api/products'
 import { addToCart } from '../features/cart/cartSlice'
+import {
+  addToWishlist,
+  removeFromWishlist,
+  selectIsInWishlist,
+} from '../features/wishlist/wishlistSlice'
 import Button from '../components/Button'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
@@ -21,6 +26,7 @@ export default function BookDetail() {
 
   const fetchBook = useCallback(() => products.getById(bookId), [bookId])
   const { status, data: book, retry } = useAsync(fetchBook)
+  const isWishlisted = useSelector((state) => book && selectIsInWishlist(book.id)(state))
 
   if (status === 'loading') return <Spinner />
   if (status === 'error') return <ErrorState message="Could not load this book." onRetry={retry} />
@@ -40,6 +46,18 @@ export default function BookDetail() {
 
   function handleNotifyMe() {
     showToast("We'll notify you when this book is back in stock.", 'info')
+  }
+
+  function handleToggleWishlist() {
+    if (!token) {
+      showToast('Please login to use your wishlist.', 'warning')
+      return
+    }
+    const action = isWishlisted ? removeFromWishlist(book.id) : addToWishlist(book.id)
+    dispatch(action)
+      .unwrap()
+      .then(() => showToast(isWishlisted ? 'Removed from wishlist.' : 'Added to wishlist.'))
+      .catch(() => showToast('Could not update your wishlist.', 'danger'))
   }
 
   return (
@@ -69,9 +87,14 @@ export default function BookDetail() {
               {book.inStock ? 'In Stock' : 'Out of Stock'}
             </span>
           </div>
-          <Button onClick={book.inStock ? handleAddToBag : handleNotifyMe}>
-            {book.inStock ? 'Add to Bag' : 'Notify Me'}
-          </Button>
+          <div className="d-flex gap-2">
+            <Button onClick={book.inStock ? handleAddToBag : handleNotifyMe}>
+              {book.inStock ? 'Add to Bag' : 'Notify Me'}
+            </Button>
+            <Button variant={isWishlisted ? 'danger' : 'outline-danger'} onClick={handleToggleWishlist}>
+              {isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+            </Button>
+          </div>
         </div>
       </div>
       <hr className="my-4" />
