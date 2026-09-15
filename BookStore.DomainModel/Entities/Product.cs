@@ -31,6 +31,8 @@ public class Product
     public DateTime AddedOn { get; set; }
     public DateTime LastModifiedDate { get; set; }
 
+    public string? ImageUrl { get; set; }
+
     [ForeignKey(nameof(Admin))] public Guid CreatedBy { get; set; }
 
 
